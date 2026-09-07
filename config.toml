@@ -1,0 +1,2 @@
+[downloads]
+url_template = "https://d37ci6vzurychx.cloudfront.net/trip-data/{type}_tripdata_{year}-{month}.parquet"
