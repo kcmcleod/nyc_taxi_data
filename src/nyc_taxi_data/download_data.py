@@ -73,7 +73,7 @@ def get_file_date(
     return target_date
 
 
-def download_file(url: str):
+def download_file(url: str) -> tuple[str, Path | None]:
     """
     Downloads file at given url, if it exists.
 
@@ -90,14 +90,14 @@ def download_file(url: str):
 
     if file_path.is_file():
         logger.info(f"Skipped: we already have the file {file_name}")
-        return "skipped"
+        return "skipped", file_path
 
     try:
         response = requests.get(url, stream=True, timeout=10)
         status_code = response.status_code
         if status_code == 403:
             logger.warning(f"Sorry! File isn't available at {url}")
-            return "failed"
+            return "failed", None
         elif status_code == 200:
             with open(file_path, mode="wb") as file:
                 file.writelines(response.iter_content(chunk_size=10 * 1024))
@@ -105,25 +105,25 @@ def download_file(url: str):
             logger.error(
                 f"Sorry! Can't handle this error code: {status_code} for {file_name}"
             )
-            return "failed"
+            return "failed", None
     except requests.exceptions.ReadTimeout as e:
         logger.error(f"Time Out Error: {e}")
-        return "failed"
+        return "failed", None
     except requests.exceptions.ConnectionError as e:
         logger.error(f"Connection Error: {e}")
-        return "failed"
+        return "failed", None
     except requests.exceptions.RequestException as e:
         logger.error(f"Request Exception: {e}")
-        return "failed"
+        return "failed", None
     except FileNotFoundError:
         logger.error(f"Cannot write the file: {file_name}")
-        return "failed"
+        return "failed", None
     except Exception:
         logger.exception("An unexpected error occurred")
-        return "failed"
+        return "failed", None
 
     logger.info(f"File saved to {file_path}")
-    return "success"
+    return "success", file_path
 
 
 def monthly_run(execution_date: datetime.date | None = None) -> None:
@@ -152,10 +152,14 @@ def monthly_run(execution_date: datetime.date | None = None) -> None:
     ]
 
     results = []
+    valid_paths = []
     for url in urls:
         # silent failures
-        result = download_file(url)
-        results.append(result)
+        status, saved_path = download_file(url)
+        results.append(status)
+
+        if status in ("success", "skipped"):
+            valid_paths.append(saved_path)
 
     logger.info(
         f"Download process finished! {results.count('success')} files were downloded. {results.count('skipped')} were skipped. "
