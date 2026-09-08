@@ -1,8 +1,6 @@
 import logging
 from pathlib import Path
 
-import polars as pl
-
 logger = logging.getLogger(__name__)
 
 
@@ -27,13 +25,6 @@ def get_parquet_files(directory: Path) -> list[Path]:
     all_files = directory.glob(pattern="*.parquet")
 
     return all_files
-
-
-def combine_taxi_data(file_paths: list[Path]) -> pl.DataFrame:
-    """
-    Reads multiple Parquet files and binds them into a single Polars DataFrame.
-    """
-    # TODO: Implement Polars concatenation
 
 
 if __name__ == "__main__":  # pragma: no cover
