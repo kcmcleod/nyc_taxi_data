@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: nyc_taxi
+    description: "Raw taxi trip data stored locally as Parquet files"
+    tables:
+      - name: trips
+        description: "Bronze layer incoming trips"
+        meta:
+          # This tells DuckDB to look one folder up, into data/raw, and read all parquet files
+          external_location: "../data/raw/*.parquet"

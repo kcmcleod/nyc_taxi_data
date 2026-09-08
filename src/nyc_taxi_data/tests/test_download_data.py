@@ -92,7 +92,9 @@ def test_read_config_exception(mock_open):
 def test_download_file_mock_skipped(mock_mkdir, mock_is_file):
     mock_is_file.return_value = True
 
-    status, saved_path = download_data.download_file("https://none.com/banana")
+    status, saved_path = download_data.download_file(
+        "https://none.com/banana", Path("/users/no/such/person/")
+    )
 
     assert status == "skipped"
     assert isinstance(saved_path, Path)
@@ -103,21 +105,31 @@ def test_download_file_mock_skipped(mock_mkdir, mock_is_file):
 
 
 @patch("requests.get")
-def test_download_file_mock_request_403(mock_get):
-
+@patch("pathlib.Path.is_file")
+@patch("pathlib.Path.mkdir")
+def test_download_file_mock_request_403(mock_mkdir, mock_is_file, mock_get):
+    mock_mkdir.return_value = True
+    mock_is_file.return_value = False
     mock_get.return_value.status_code = 403
-    status, saved_path = download_data.download_file("https://none.com/banana")
+    status, saved_path = download_data.download_file(
+        "https://none.com/banana", Path("/users/no/such/person/")
+    )
 
     assert status == "failed"
     assert saved_path is None
 
 
 @patch("requests.get")
-def test_download_file_mock_request_503(mock_get):
-
+@patch("pathlib.Path.is_file")
+@patch("pathlib.Path.mkdir")
+def test_download_file_mock_request_503(mock_mkdir, mock_is_file, mock_get):
+    mock_mkdir.return_value = True
+    mock_is_file.return_value = False
     mock_get.return_value.status_code = 503
 
-    status, saved_path = download_data.download_file("https://none.com/banana")
+    status, saved_path = download_data.download_file(
+        "https://none.com/banana", Path("/users/no/such/person/")
+    )
 
     assert status == "failed"
     assert saved_path is None
@@ -131,51 +143,77 @@ def test_download_file_mock_request_200(mock_get, mock_mkdir, mock_file):
     mock_get.return_value.status_code = 200
     mock_get.return_value.iter_content.return_value = [b"fake_data_chunk"]
 
-    status, saved_path = download_data.download_file("https://none.com/banana")
+    status, saved_path = download_data.download_file(
+        "https://none.com/banana", Path("/users/no/such/person/")
+    )
     assert status == "success"
     assert isinstance(saved_path, Path)
     assert saved_path.name == "banana"
 
     mock_file.assert_called_once_with(ANY, mode="wb")
-    mock_file().writelines.assert_called_once_with([b"fake_data_chunk"])
+    mock_file().write.assert_called_once_with(b"fake_data_chunk")
 
 
 @patch("requests.get")
-def test_download_file_timeout(mock_get):
+@patch("pathlib.Path.is_file")
+@patch("pathlib.Path.mkdir")
+def test_download_file_timeout(mock_mkdir, mock_is_file, mock_get):
+    mock_mkdir.return_value = True
+    mock_is_file.return_value = False
     mock_get.side_effect = requests.exceptions.ReadTimeout("Server took too long")
 
-    result = download_data.download_file("https://none.com/banana")
+    result = download_data.download_file(
+        "https://none.com/banana", Path("/users/no/such/person/")
+    )
 
     assert result == ("failed", None)
 
 
 @patch("requests.get")
-def test_download_file_connection(mock_get):
+@patch("pathlib.Path.is_file")
+@patch("pathlib.Path.mkdir")
+def test_download_file_connection(mock_mkdir, mock_is_file, mock_get):
+    mock_mkdir.return_value = True
+    mock_is_file.return_value = False
     mock_get.side_effect = requests.exceptions.ConnectionError("Connection error")
 
-    result = download_data.download_file("https://none.com/banana")
+    result = download_data.download_file(
+        "https://none.com/banana", Path("/users/no/such/person/")
+    )
 
     assert result == ("failed", None)
 
 
 @patch("requests.get")
-def test_download_file_request(mock_get):
+@patch("pathlib.Path.is_file")
+@patch("pathlib.Path.mkdir")
+def test_download_file_request(mock_mkdir, mock_is_file, mock_get):
+    mock_mkdir.return_value = True
+    mock_is_file.return_value = False
     mock_get.side_effect = requests.exceptions.RequestException("Request error")
 
-    result = download_data.download_file("https://none.com/banana")
+    result = download_data.download_file(
+        "https://none.com/banana", Path("/users/no/such/person/")
+    )
 
     assert result == ("failed", None)
 
 
 @patch("builtins.open")
 @patch("requests.get")
-def test_download_file_fnf(mock_get, mock_open):
+@patch("pathlib.Path.is_file")
+@patch("pathlib.Path.mkdir")
+def test_download_file_fnf(mock_mkdir, mock_is_file, mock_get, mock_open):
+    mock_mkdir.return_value = True
+    mock_is_file.return_value = False
     mock_get.return_value.status_code = 200
     mock_get.return_value.iter_content.return_value = [b"fake_data_chunk"]
 
     mock_open.side_effect = FileNotFoundError
 
-    result = download_data.download_file("https://none.com/banana")
+    result = download_data.download_file(
+        "https://none.com/banana", Path("/users/no/such/person/")
+    )
 
     assert result == ("failed", None)
 
@@ -191,7 +229,10 @@ def test_monthly_run(mock_get_file_date, mock_read_config, mock_download_file):
     mock_get_file_date.return_value = datetime.datetime(2020, 5, 17, tzinfo=uk_tz)
 
     mock_read_config.return_value = {
-        "downloads": {"url_template": "https://fake.com/{type}_{year}_{month}.parquet"}
+        "downloads": {
+            "url_template": "https://fake.com/{type}_{year}_{month}.parquet",
+            "raw_folder": "/no/such/path",
+        }
     }
 
     mock_download_file.return_value = False, "/dir/dummy.file.parquet"
@@ -201,7 +242,7 @@ def test_monthly_run(mock_get_file_date, mock_read_config, mock_download_file):
     assert mock_download_file.call_count == 2
 
     expected_calls = [
-        call("https://fake.com/yellow_2020_05.parquet"),
-        call("https://fake.com/green_2020_05.parquet"),
+        call("https://fake.com/yellow_2020_05.parquet", Path("/no/such/path")),
+        call("https://fake.com/green_2020_05.parquet", Path("/no/such/path")),
     ]
     mock_download_file.assert_has_calls(expected_calls)

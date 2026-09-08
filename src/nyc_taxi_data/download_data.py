@@ -1,5 +1,6 @@
 import datetime
 import logging
+import os
 import tomllib
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -21,7 +22,16 @@ def read_config():
         FileNotFoundError: If 'config.toml' is missing from the project root.
         tomllib.TOMLDecodeError: If the config file contains invalid TOML syntax.
     """
-    project_root = Path(__file__).parents[2]
+    env_root = os.getenv("PROJECT_ROOT")
+
+    if env_root:
+        project_root = Path(env_root)
+    else:
+        logger.warning(
+            "PROJECT_ROOT environment variable missing. Falling back to relative pathing."
+        )
+        project_root = Path(__file__).parents[2]
+
     config_path = project_root / "config.toml"
 
     try:
@@ -73,7 +83,7 @@ def get_file_date(
     return target_date
 
 
-def download_file(url: str) -> tuple[str, Path | None]:
+def download_file(url: str, raw_data_dir: Path) -> tuple[str, Path | None]:
     """
     Downloads file at given url, if it exists.
 
@@ -81,12 +91,11 @@ def download_file(url: str) -> tuple[str, Path | None]:
         url (str): The URL is file is to be downloaded from
 
     Returns:
-        boolean: True if the file was downloaded otherwise False
+        boolean: Tuple
     """
     file_name = url.split("/")[-1]
-    downloads_dir = Path.home() / "Downloads/nyc_data/"
-    downloads_dir.mkdir(parents=True, exist_ok=True)
-    file_path = downloads_dir / file_name
+    raw_data_dir.mkdir(parents=True, exist_ok=True)
+    file_path = raw_data_dir / file_name
 
     if file_path.is_file():
         logger.info(f"Skipped: we already have the file {file_name}")
@@ -100,7 +109,9 @@ def download_file(url: str) -> tuple[str, Path | None]:
             return "failed", None
         elif status_code == 200:
             with open(file_path, mode="wb") as file:
-                file.writelines(response.iter_content(chunk_size=10 * 1024))
+                for chunk in response.iter_content(chunk_size=1024 * 1024):
+                    if chunk:
+                        file.write(chunk)
         else:
             logger.error(
                 f"Sorry! Can't handle this error code: {status_code} for {file_name}"
@@ -140,6 +151,8 @@ def monthly_run(execution_date: datetime.date | None = None) -> None:
     # throws error if failure - will be caught by Airflow
     config = read_config()
 
+    raw_data_dir = Path(config["downloads"]["raw_folder"])
+
     template_url = config["downloads"]["url_template"]
 
     urls = [
@@ -155,14 +168,14 @@ def monthly_run(execution_date: datetime.date | None = None) -> None:
     valid_paths = []
     for url in urls:
         # silent failures
-        status, saved_path = download_file(url)
+        status, saved_path = download_file(url, raw_data_dir)
         results.append(status)
 
         if status in ("success", "skipped"):
             valid_paths.append(saved_path)
 
     logger.info(
-        f"Download process finished! {results.count('success')} files were downloded. {results.count('skipped')} were skipped. "
+        f"Download process finished! {results.count('success')} files were downloaded. {results.count('skipped')} were skipped. "
         + f"{results.count('failed')} were NOT downloaded due to an error."
     )
 
