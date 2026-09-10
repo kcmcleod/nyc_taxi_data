@@ -12,3 +12,6 @@ db_run:
 
 db_test:
 	uv run --env-file .env dbt test --project-dir taxi_transforms --profiles-dir taxi_transforms
+
+db_seed:
+	uv run --env-file .env dbt seed --project-dir taxi_transforms --profiles-dir taxi_transforms

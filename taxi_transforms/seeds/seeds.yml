@@ -1,0 +1,33 @@
+version: 2
+
+seeds:
+  - name: payment_type_lookup
+    columns:
+      - name: payment_type_id
+        tests:
+          - unique
+          - not_null
+  - name: trip_type_lookup
+    columns:
+      - name: trip_type_id
+        tests:
+          - unique
+          - not_null
+  - name: rate_code_lookup
+    columns:
+      - name: rate_code_id
+        tests:
+          - unique
+          - not_null
+  - name: vendor_lookup
+    columns:
+      - name: vendor_id
+        tests:
+          - unique
+          - not_null    
+  - name: taxi_zone_lookup
+    columns:
+      - name: location_id
+        tests:
+          - unique
+          - not_null                   
