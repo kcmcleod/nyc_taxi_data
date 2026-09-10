@@ -1,0 +1,286 @@
+version: 2
+
+models:
+  - name: stg_nyc_taxi__yellow
+    description: This table has YELLOW taxi trips. Each row is one trip.
+
+    columns:
+      - name: vendor_id
+        description: A code indicating the TPEP provider that provided the record. 
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              arguments:
+                values: [1, 2, 5, 6, 7]
+
+      - name: rate_code_id
+        description: The final rate code in effect at the end of the trip.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5, 6, 99]
+
+      - name: pick_up_location_id
+        description: TLC Taxi Zone in which the taximeter was engaged.
+        tests:
+          - is_valid_location
+
+      - name: drop_off_location_id
+        description: TLC Taxi Zone in which the taximeter was disengaged.
+        tests:
+          - is_valid_location
+
+      - name: payment_type_id
+        description: A numeric code signifying how the passenger paid for the trip.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              arguments:
+                values: [0, 1, 2, 3, 4, 5, 6]        
+
+      - name: trip_type_id
+        description: A code indicating whether the trip was a street-hail or a dispatch that is automatically assigned based on the metered rate in use but can be altered by the driver. Green taxi data only. 
+        tests:
+          - accepted_values:
+              arguments:
+                values: [99]      
+
+      - name: passenger_count
+        description: The number of passengers in the vehicle. 
+
+      - name: trip_distance_miles
+        description: The elapsed trip distance in miles reported by the taximeter.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: fare_amount
+        description: he time-and-distance fare calculated by the meter. 
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: extra_charges
+        description: Miscellaneous extras and surcharges.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: mta_tax
+        description: Tax that is automatically triggered based on the metered rate in use.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: tip_amount
+        description: Tip amount – This field is automatically populated for credit card tips. Cash tips are not included.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: tolls_amount
+        description: Total amount of all tolls paid in trip.
+        tests:
+          - not_null:
+              config:
+                severity: warn                                                
+
+      - name: improvement_surcharge
+        description: Improvement surcharge assessed trips at the flag drop. The improvement surcharge began being levied in 2015.
+        tests:
+          - not_null:
+              config:
+                severity: warn  
+
+      - name: congestion_surcharge
+        description: Total amount collected in trip for NYS congestion surcharge.
+
+      - name: cbd_congestion_fee
+        description: Per-trip charge for MTA's Congestion Relief Zone starting Jan. 5, 2025.
+ 
+
+      - name: airport_fee
+        description: For pick up only at LaGuardia and John F. Kennedy Airports.
+
+      - name: total_amount
+        description: The total amount charged to passengers. Does not include cash tips.
+        tests:
+          - not_null:
+              config:
+                severity: warn  
+
+      - name: store_and_fwd_flag
+        description: This flag indicates whether the trip record was held in vehicle memory before sending to the vendor, aka “store and forward,” because the vehicle did not have a connection to the server.
+        tests:                                                           
+          - accepted_values:
+              arguments: 
+                values: ['Y', 'N', 'M']
+      
+      - name: pick_up_date_time
+        description: The date and time when the meter was engaged.
+        tests:
+          - not_null:
+              config:
+                severity: warn                                                              
+
+      - name: drop_off_date_time
+        description: The date and time when the meter was disengaged. 
+        tests:
+          - not_null:
+              config:
+                severity: warn      
+          - is_greater_than: 
+              arguments:                                                  
+                  compare_column: pick_up_date_time
+
+  - name: stg_nyc_taxi__green
+    description: This table has GREEN taxi trips. Each row is one trip.
+
+    columns:
+      - name: vendor_id
+        description: A code indicating the TPEP provider that provided the record. 
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              arguments:
+                values: [1, 2, 6]
+
+      - name: rate_code_id
+        description: The final rate code in effect at the end of the trip.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5, 6, 99]
+
+      - name: pick_up_location_id
+        description: TLC Taxi Zone in which the taximeter was engaged.
+        tests:
+          - is_valid_location
+
+      - name: drop_off_location_id
+        description: TLC Taxi Zone in which the taximeter was disengaged.
+        tests:
+          - is_valid_location
+
+      - name: payment_type_id
+        description: A numeric code signifying how the passenger paid for the trip.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              arguments:
+                values: [0, 1, 2, 3, 4, 5, 6]        
+
+      - name: trip_type_id
+        description: A code indicating whether the trip was a street-hail or a dispatch that is automatically assigned based on the metered rate in use but can be altered by the driver. Green taxi data only. 
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              arguments:
+                values: [1, 2, 99] 
+
+      - name: passenger_count
+        description: The number of passengers in the vehicle. 
+
+      - name: trip_distance_miles
+        description: The elapsed trip distance in miles reported by the taximeter.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: fare_amount
+        description: he time-and-distance fare calculated by the meter. 
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: extra_charges
+        description: Miscellaneous extras and surcharges.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: mta_tax
+        description: Tax that is automatically triggered based on the metered rate in use.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: tip_amount
+        description: Tip amount – This field is automatically populated for credit card tips. Cash tips are not included.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: tolls_amount
+        description: Total amount of all tolls paid in trip.
+        tests:
+          - not_null:
+              config:
+                severity: warn                                                
+
+      - name: improvement_surcharge
+        description: Improvement surcharge assessed trips at the flag drop. The improvement surcharge began being levied in 2015.
+        tests:
+          - not_null:
+              config:
+                severity: warn  
+
+      - name: congestion_surcharge
+        description: Total amount collected in trip for NYS congestion surcharge.
+
+      - name: cbd_congestion_fee
+        description: Per-trip charge for MTA's Congestion Relief Zone starting Jan. 5, 2025.
+
+      - name: airport_fee
+        description: For pick up only at LaGuardia and John F. Kennedy Airports.
+
+      - name: total_amount
+        description: The total amount charged to passengers. Does not include cash tips.
+        tests:
+          - not_null:
+              config:
+                severity: warn  
+
+      - name: store_and_fwd_flag
+        description: This flag indicates whether the trip record was held in vehicle memory before sending to the vendor, aka “store and forward,” because the vehicle did not have a connection to the server.
+        tests:                                                           
+          - accepted_values:
+              arguments: 
+                values: ['Y', 'N', 'M']
+      
+      - name: pick_up_date_time
+        description: The date and time when the meter was engaged.
+        tests:
+          - not_null:
+              config:
+                severity: warn                                                              
+
+      - name: drop_off_date_time
+        description: The date and time when the meter was disengaged. 
+        tests:
+          - not_null:
+              config:
+                severity: warn      
+          - is_greater_than: 
+              arguments:                                                  
+                  compare_column: pick_up_date_time
