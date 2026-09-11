@@ -60,7 +60,7 @@ models:
                 severity: warn
 
       - name: fare_amount
-        description: he time-and-distance fare calculated by the meter. 
+        description: The time-and-distance fare calculated by the meter. 
         tests:
           - not_null:
               config:
