@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: int_nyc_taxi__unioned
+    description: This table has YELLOW taxi trips. Each row is one trip.
+
+    columns:
+      - name: taxi_trip_id
+        description: A generated ID for each row, with a row being a single trip (green or yellow). 
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - unique
+      - name: service_type
+        description: Indicates if 'green' or 'yellow' trip.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']
