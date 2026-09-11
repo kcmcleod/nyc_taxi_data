@@ -31,7 +31,8 @@ renamed as (
         congestion_surcharge IS NULL as is_congestion_surcharge_missing,
         coalesce(congestion_surcharge, 0) as congestion_surcharge,
         cbd_congestion_fee IS NULL as is_cbd_congestion_fee_missing,
-        coalesce(cbd_congestion_fee, 0) as cbd_congestion_fee,       
+        coalesce(cbd_congestion_fee, 0) as cbd_congestion_fee,     
+        TRUE AS is_airport_fee_missing,  
         cast(null as float) as airport_fee, 
         total_amount,
 
@@ -46,6 +47,10 @@ renamed as (
         end as drop_off_date_time
 
     from source
+
+    {% if target.name == 'dev' %}
+    limit 100000
+    {% endif %}
 
 )
 
