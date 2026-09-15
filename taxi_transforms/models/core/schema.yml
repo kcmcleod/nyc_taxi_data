@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: dim_nyc_taxi__trip_indicators
+    description: This has 'junk' dimension data.
+    columns:
+      - name: trip_indicators_id
+        description: A generated ID for each row, with a row being a unique combination of the following fields (service_type, is_airport_fee_missing)
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - unique
+
+  - name: fct_nyc_taxi__trips
+    description: Actual trip data. 1 trip per row; green or yellow.
+    columns:
+      - name: trip_indicators_id
+        description: A generated ID for each row, with a row being a unique combination of the following fields (service_type, is_airport_fee_missing)
+        tests:
+          - not_null:
+              config:
+                severity: warn      

@@ -6,6 +6,7 @@ target/
 dbt_modules/
 dbt_packages/
 logs/
+data/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
@@ -35,7 +36,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-
+.env
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -215,3 +216,4 @@ override.tf.json
 terraform.rc
 
 # End of https://www.toptal.com/developers/gitignore/api/python,terraform,dbt
+.DS_Store

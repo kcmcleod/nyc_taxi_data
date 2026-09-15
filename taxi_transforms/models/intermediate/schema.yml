@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: int_nyc_taxi__unioned
+    description: This table has yellow and green taxi trips. Each row is one trip.
+
+    columns:
+      - name: taxi_trip_id
+        description: > 
+          A generated ID for each row, with a row being a single trip (green or yellow).
+          **Grain:** Hashed combination of `service_type`, `vendor_id`, `rate_code_id`, `pick_up_location_id`, `drop_off_location_id`, `payment_type_id`, `trip_type_id`, `pick_up_date_time`, `drop_off_date_time`, `fare_amount`, `total_amount`, and `trip_distance_miles`.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - unique
+      - name: service_type
+        description: Indicates if 'green' or 'yellow' trip.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']

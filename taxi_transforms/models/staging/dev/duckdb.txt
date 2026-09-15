@@ -1,0 +1,7 @@
+
+uv run python
+import duckdb
+con = duckdb.connect('/Users/kcm/python_apps/nyc_taxi_data/data/taxi_data.duckdb')
+con.sql("SELECT DISTINCT vendor_id FROM stg_nyc_taxi__yellow").show()
+con.sql("SELECT COUNT( vendor_id) FROM stg_nyc_taxi__yellow WHERE vendor_id == 5").show()
+exit()
