@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: obt_nyc_taxi__trips
+    description: Final table for apps
+
+    columns:
+      - name: taxi_trip_id
+        description: > 
+          A generated ID for each row, with a row being a single trip (green or yellow).
+          **Grain:** Hashed combination of `service_type`, `vendor_id`, `rate_code_id`, `pick_up_location_id`, `drop_off_location_id`, `payment_type_id`, `trip_type_id`, `pick_up_date_time`, `drop_off_date_time`, `fare_amount`, `total_amount`, and `trip_distance_miles`.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - unique
+      - name: pick_up_borough
+        description: The text name of the pick up borough. Should never be null if the join succeeds.
+        tests:
+          - not_null          
+      - name: drop_off_borough
+        description: The text name of the drop off borough. Should never be null if the join succeeds.
+        tests:
+          - not_null
+      - name: payment_type_name
+        description: The text name of the payment type. Should never be null if the join succeeds.
+        tests:
+          - not_null        
+      - name: rate_code_name
+        description: The text name of the rate code. Should never be null if the join succeeds.
+        tests: 
+          - not_null     
+      - name: service_type
+        description: The text name of the service type. Should never be null if the join succeeds.
+        tests: 
+          - not_null 
+      - name: trip_type_name
+        description: The text name of the trip type. Should never be null if the join succeeds.
+        tests: 
+          - not_null                            
+      - name: vendor_name
+        description: The text name of the vendor. Should never be null if the join succeeds.
+        tests:
+          - not_null          
