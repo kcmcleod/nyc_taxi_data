@@ -7,27 +7,52 @@ seeds:
         tests:
           - unique
           - not_null
+      - name: payment_type_name
+        tests:
+          - unique
+          - not_null          
   - name: trip_type_lookup
     columns:
       - name: trip_type_id
         tests:
           - unique
           - not_null
+      - name: trip_type_name
+        tests:
+          - unique
+          - not_null          
   - name: rate_code_lookup
     columns:
       - name: rate_code_id
         tests:
           - unique
           - not_null
+      - name: rate_code_name
+        tests:
+          - unique
+          - not_null          
   - name: vendor_lookup
     columns:
       - name: vendor_id
         tests:
           - unique
           - not_null    
+      - name: vendor_name
+        tests:
+          - unique
+          - not_null   
   - name: taxi_zone_lookup
     columns:
       - name: location_id
         tests:
           - unique
           - not_null                   
+      - name: borough_name
+        tests:
+          - not_null
+      - name: zone_name
+        tests:
+          - not_null
+      - name: service_zone
+        tests:
+          - not_null                     
