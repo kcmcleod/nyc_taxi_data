@@ -3,5 +3,6 @@
   "sqlfluff.executablePath": "/Users/kcm/python_apps/nyc_taxi_data/.venv/bin/sqlfluff",
   "sqlfluff.linter.run": "onSave",
   "sqlfluff.experimental.format.executeInTerminal": true,
-  "editor.formatOnSave": false
+  "editor.formatOnSave": false,
+  "python.envFile": "${workspaceFolder}/.env"
 }

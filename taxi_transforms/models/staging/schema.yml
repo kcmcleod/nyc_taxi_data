@@ -119,7 +119,7 @@ models:
                 severity: warn  
 
       - name: store_and_fwd_flag
-        description: This flag indicates whether the trip record was held in vehicle memory before sending to the vendor, aka “store and forward,” because the vehicle did not have a connection to the server.
+        description: This flag indicates whether the trip record was held in vehicle memory before sending to the vendor, aka "store and forward," because the vehicle did not have a connection to the server.
         tests:                                                           
           - accepted_values:
               arguments: 
@@ -262,7 +262,7 @@ models:
                 severity: warn  
 
       - name: store_and_fwd_flag
-        description: This flag indicates whether the trip record was held in vehicle memory before sending to the vendor, aka “store and forward,” because the vehicle did not have a connection to the server.
+        description: This flag indicates whether the trip record was held in vehicle memory before sending to the vendor, aka "store and forward," because the vehicle did not have a connection to the server.
         tests:                                                           
           - accepted_values:
               arguments: 
