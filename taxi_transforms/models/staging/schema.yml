@@ -1,0 +1,311 @@
+version: 2
+
+models:
+  - name: stg_nyc_taxi__yellow
+    description: This table has YELLOW taxi trips. Each row is one trip.
+
+    columns:
+      - name: vendor_id
+        description: '{{ doc("vendor_id") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              arguments:
+                values: [1, 2, 5, 6, 7]
+
+      - name: rate_code_id
+        description: '{{ doc("rate_code_id") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5, 6, 99]
+
+      - name: pick_up_location_id
+        description: '{{ doc("pick_up_location_id") }}'
+        data_tests:
+          - is_valid_location
+
+      - name: drop_off_location_id
+        description: '{{ doc("drop_off_location_id") }}'
+        data_tests:
+          - is_valid_location
+
+      - name: payment_type_id
+        description: '{{ doc("payment_type_id") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              arguments:
+                values: [0, 1, 2, 3, 4, 5, 6]        
+
+      - name: trip_type_id
+        description: '{{ doc("trip_type_id") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [99]      
+
+      - name: passenger_count
+        description: '{{ doc("passenger_count") }}'
+
+      - name: trip_distance_miles
+        description: '{{ doc("trip_distance_miles") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: fare_amount
+        description: '{{ doc("fare_amount") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: extra_charges
+        description: '{{ doc("extra_charges") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: mta_tax
+        description: '{{ doc("mta_tax") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: tip_amount
+        description: '{{ doc("tip_amount") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: tolls_amount
+        description: '{{ doc("tolls_amount") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn                                                
+
+      - name: improvement_surcharge
+        description: '{{ doc("improvement_surcharge") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn  
+
+      - name: congestion_surcharge
+        description: '{{ doc("congestion_surcharge") }}'
+
+      - name: cbd_congestion_fee
+        description: '{{ doc("cbd_congestion_fee") }}'
+ 
+      - name: airport_fee
+        description: '{{ doc("airport_fee") }}'
+
+      - name: total_amount
+        description: '{{ doc("total_amount") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn  
+
+      - name: store_and_fwd_flag
+        description: '{{ doc("store_and_fwd_flag") }}'
+        data_tests:                                                           
+          - accepted_values:
+              arguments: 
+                values: ['Y', 'N', 'M']
+      
+      - name: pick_up_date_time
+        description: '{{ doc("pick_up_date_time") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn                                                              
+
+      - name: drop_off_date_time
+        description: '{{ doc("drop_off_date_time") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn      
+          - is_greater_than: 
+              arguments:                                                  
+                  compare_column: pick_up_date_time
+
+      - name: is_passenger_count_missing
+        description: '{{ doc("is_passenger_count_missing") }}'
+
+      - name: is_congestion_surcharge_missing
+        description: '{{ doc("is_congestion_surcharge_missing") }}'
+
+      - name: is_cbd_congestion_fee_missing
+        description: '{{ doc("is_cbd_congestion_fee_missing") }}'
+
+      - name: is_airport_fee_missing
+        description: '{{ doc("is_airport_fee_missing") }}'
+        
+                          
+
+  - name: stg_nyc_taxi__green
+    description: This table has GREEN taxi trips. Each row is one trip.
+
+    columns:
+      - name: vendor_id
+        description: '{{ doc("vendor_id") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              arguments:
+                values: [1, 2, 6]
+
+      - name: rate_code_id
+        description: '{{ doc("rate_code_id") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5, 6, 99]
+
+      - name: pick_up_location_id
+        description: '{{ doc("pick_up_location_id") }}'
+        data_tests:
+          - is_valid_location
+
+      - name: drop_off_location_id
+        description: '{{ doc("drop_off_location_id") }}'
+        data_tests:
+          - is_valid_location
+
+      - name: payment_type_id
+        description: '{{ doc("payment_type_id") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              arguments:
+                values: [0, 1, 2, 3, 4, 5, 6]        
+
+      - name: trip_type_id
+        description: '{{ doc("trip_type_id") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              arguments:
+                values: [1, 2, 99] 
+
+      - name: passenger_count
+        description: '{{ doc("passenger_count") }}'
+
+      - name: trip_distance_miles
+        description: '{{ doc("trip_distance_miles") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: fare_amount
+        description: '{{ doc("fare_amount") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: extra_charges
+        description: '{{ doc("extra_charges") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: mta_tax
+        description: '{{ doc("mta_tax") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: tip_amount
+        description: '{{ doc("tip_amount") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: tolls_amount
+        description: '{{ doc("tolls_amount") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn                                                
+
+      - name: improvement_surcharge
+        description: '{{ doc("improvement_surcharge") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn  
+
+      - name: congestion_surcharge
+        description: '{{ doc("congestion_surcharge") }}'
+
+      - name: cbd_congestion_fee
+        description: '{{ doc("cbd_congestion_fee") }}'
+ 
+      - name: airport_fee
+        description: '{{ doc("airport_fee") }}'
+
+      - name: total_amount
+        description: '{{ doc("total_amount") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn  
+
+      - name: store_and_fwd_flag
+        description: '{{ doc("store_and_fwd_flag") }}'
+        data_tests:                                                           
+          - accepted_values:
+              arguments: 
+                values: ['Y', 'N', 'M']
+      
+      - name: pick_up_date_time
+        description: '{{ doc("pick_up_date_time") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn                                                              
+
+      - name: drop_off_date_time
+        description: '{{ doc("drop_off_date_time") }}'
+        data_tests:
+          - not_null:
+              config:
+                severity: warn      
+          - is_greater_than: 
+              arguments:                                                  
+                  compare_column: pick_up_date_time
+
+      - name: is_passenger_count_missing
+        description: '{{ doc("is_passenger_count_missing") }}'
+
+      - name: is_congestion_surcharge_missing
+        description: '{{ doc("is_congestion_surcharge_missing") }}'
+
+      - name: is_cbd_congestion_fee_missing
+        description: '{{ doc("is_cbd_congestion_fee_missing") }}'
+
+      - name: is_airport_fee_missing
+        description: '{{ doc("is_airport_fee_missing") }}'

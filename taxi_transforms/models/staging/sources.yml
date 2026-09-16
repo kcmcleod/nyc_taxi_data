@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: raw_nyc_taxi
+    description: "Raw taxi trip data stored locally as Parquet files"
+    tables:
+      - name: yellow
+        description: "Yellow medallion taxi trip records"
+        config:
+          meta:
+            external_location: "read_parquet('{{ env_var('TAXI_DATA_RAW_PATH') }}/yellow_*.parquet', union_by_name=True)"
+      - name: green
+        description: "Green medallion taxi trip records"
+        config:
+          meta:
+            external_location: "read_parquet('{{ env_var('TAXI_DATA_RAW_PATH') }}/green_*.parquet', union_by_name=True)"
