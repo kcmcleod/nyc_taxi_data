@@ -1,43 +1,70 @@
 with source as (
-    select * from {{ source('raw_nyc_taxi', 'green') }}
+    select *
+    from {{ source('raw_nyc_taxi', 'green') }}
 ),
 
 renamed as (
-    select
+    select * exclude (
+            VendorID,
+            RatecodeID,
+            PULocationID,
+            DOLocationID,
+            payment_type,
+            trip_type,
+            passenger_count,
+            trip_distance,
+            fare_amount,
+            extra,
+            mta_tax,
+            tip_amount,
+            tolls_amount,
+            improvement_surcharge,
+            congestion_surcharge,
+            cbd_congestion_fee,
+            -- airport_fee is not in green data
+            -- ehail_fee is present but seems to be null in later years
+            total_amount,
+            store_and_fwd_flag,
+            lpep_pickup_datetime,
+            lpep_dropoff_datetime
+        ),
+
+        -- check for drift in data types; error will stop forward progress
+
         ---------- ids
-        VendorID as vendor_id,
-        coalesce(RatecodeID, 99) as rate_code_id,
-        PULocationID as pick_up_location_id,
-        DOLocationID as drop_off_location_id,
+        cast(VendorID as integer) as vendor_id,
+        coalesce(cast(RatecodeID as integer), 99) as rate_code_id,
+        cast(PULocationID as integer) as pick_up_location_id,
+        cast(DOLocationID as integer) as drop_off_location_id,
         coalesce(cast(payment_type as integer), 5) as payment_type_id,
         coalesce(cast(trip_type as integer), 99) as trip_type_id,
 
         ---------- numerics
         passenger_count is NULL as is_passenger_count_missing,
-        coalesce(passenger_count, 1) as passenger_count,
-        trip_distance as trip_distance_miles,
-        fare_amount,
-        extra as extra_charges,
-        mta_tax,
-        tip_amount,
-        tolls_amount,
-        improvement_surcharge,
+        coalesce(cast(passenger_count as integer), 1) as passenger_count,
+        cast(trip_distance as float) as trip_distance_miles,
+        cast(fare_amount as float) as fare_amount,
+        cast(extra as float) as extra_charges,
+        cast(mta_tax as float) as mta_tax,
+        cast(tip_amount as float) as tip_amount,
+        cast(tolls_amount as float) as tolls_amount,
+        cast(improvement_surcharge as float) as improvement_surcharge,
         congestion_surcharge is NULL as is_congestion_surcharge_missing,
-        coalesce(congestion_surcharge, 0) as congestion_surcharge,
+        coalesce(cast(congestion_surcharge as float), 0) as congestion_surcharge,
         cbd_congestion_fee is NULL as is_cbd_congestion_fee_missing,
-        coalesce(cbd_congestion_fee, 0) as cbd_congestion_fee,
+        coalesce(cast(cbd_congestion_fee as float), 0) as cbd_congestion_fee,
         TRUE as is_airport_fee_missing,
         cast(NULL as float) as airport_fee,
-        total_amount,
+        cast(total_amount as float) as total_amount,
 
         ---------- string
-        coalesce(store_and_fwd_flag, 'M') as store_and_fwd_flag,
+        coalesce(cast(store_and_fwd_flag as character), 'M') as store_and_fwd_flag,
 
         ---------- timestamps
-        lpep_pickup_datetime as pick_up_date_time,
+        cast(lpep_pickup_datetime as timestamp) as pick_up_date_time,
         case
             when lpep_dropoff_datetime < pick_up_date_time then cast(NULL as timestamp)
-            else lpep_dropoff_datetime
+            else cast(lpep_dropoff_datetime as timestamp)
         end as drop_off_date_time
 
     from source
@@ -49,4 +76,5 @@ renamed as (
 )
 
 select * from renamed
+-- filter out 0 duration trips
 where pick_up_date_time != drop_off_date_time or drop_off_date_time is NULL
