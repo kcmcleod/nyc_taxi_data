@@ -68,16 +68,16 @@ joined_data as (
         t.drop_off_date_time,
         dof.borough_name as drop_off_borough,
         dof.service_zone as drop_off_service_zone,
-        dof.zone_name as drop_off_zone,
+        dof.zone_name as drop_off_zone
 
     from trip_data as t
-    left join vendor_data as v using(vendor_id)
-    left join payment_type_data as pt using(payment_type_id)
-    left join rate_code_data as rc using(rate_code_id)
-    left join trip_type_data as tt using(trip_type_id)
+    left join vendor_data as v using (vendor_id)
+    left join payment_type_data as pt using (payment_type_id)
+    left join rate_code_data as rc using (rate_code_id)
+    left join trip_type_data as tt using (trip_type_id)
     left join location_data as pu on t.pick_up_location_id = pu.location_id
     left join location_data as dof on t.drop_off_location_id = dof.location_id
-    left join junk_data as jd using(trip_indicators_id)
+    left join junk_data as jd using (trip_indicators_id)
 )
 
 select *

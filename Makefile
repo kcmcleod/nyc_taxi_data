@@ -1,4 +1,4 @@
-.PHONY: debug test coverage db_run db_test
+.PHONY: debug test coverage db_run db_test db_docs
 
 debug:
 	uv run --env-file .env dbt debug --project-dir taxi_transforms --profiles-dir taxi_transforms
@@ -15,3 +15,7 @@ db_test:
 
 db_seed:
 	uv run --env-file .env dbt seed --project-dir taxi_transforms --profiles-dir taxi_transforms
+
+db_docs:
+	uv run --env-file .env dbt docs generate --project-dir taxi_transforms --profiles-dir taxi_transforms
+	uv run --env-file .env dbt docs serve --project-dir taxi_transforms --profiles-dir taxi_transforms

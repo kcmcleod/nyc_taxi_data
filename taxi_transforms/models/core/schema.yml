@@ -5,12 +5,32 @@ models:
     description: This has 'junk' dimension data.
     columns:
       - name: trip_indicators_id
-        description: A generated ID for each row, with a row being a unique combination of the following fields (service_type, is_airport_fee_missing)
+        description: '{{ doc("trip_indicators_id") }}'
         tests:
           - not_null:
               config:
                 severity: warn
           - unique
+          
+      # inherited columns that have already been tested   
+      - name: is_passenger_count_missing
+        description: '{{ doc("is_passenger_count_missing") }}'
+
+      - name: is_congestion_surcharge_missing
+        description: '{{ doc("is_congestion_surcharge_missing") }}'
+
+      - name: is_cbd_congestion_fee_missing
+        description: '{{ doc("is_cbd_congestion_fee_missing") }}'
+
+      - name: is_airport_fee_missing
+        description: '{{ doc("is_airport_fee_missing") }}'
+
+      - name: service_type
+        description: '{{ doc("service_type") }}'
+
+      - name: store_and_fwd_flag
+        description: '{{ doc("store_and_fwd_flag") }}'
+
 
   - name: fct_nyc_taxi__trips
     description: Actual trip data. 1 trip per row; green or yellow.
@@ -21,3 +41,67 @@ models:
           - not_null:
               config:
                 severity: warn      
+
+      # inherited columns that have already been tested        
+      - name: taxi_trip_id
+        description: '{{ doc("taxi_trip_id") }}'
+    
+      - name: vendor_id
+        description: '{{ doc("vendor_id") }}'
+
+      - name: rate_code_id
+        description: '{{ doc("rate_code_id") }}'
+
+      - name: pick_up_location_id
+        description: '{{ doc("pick_up_location_id") }}'
+
+      - name: drop_off_location_id
+        description: '{{ doc("drop_off_location_id") }}'
+
+      - name: payment_type_id
+        description: '{{ doc("payment_type_id") }}'
+
+      - name: trip_type_id
+        description: '{{ doc("trip_type_id") }}'
+
+      - name: passenger_count
+        description: '{{ doc("passenger_count") }}'
+
+      - name: trip_distance_miles
+        description: '{{ doc("trip_distance_miles") }}'
+
+      - name: fare_amount
+        description: '{{ doc("fare_amount") }}'
+
+      - name: extra_charges
+        description: '{{ doc("extra_charges") }}'
+
+      - name: mta_tax
+        description: '{{ doc("mta_tax") }}'
+
+      - name: tip_amount
+        description: '{{ doc("tip_amount") }}'
+
+      - name: tolls_amount
+        description: '{{ doc("tolls_amount") }}'
+
+      - name: improvement_surcharge
+        description: '{{ doc("improvement_surcharge") }}'
+
+      - name: congestion_surcharge
+        description: '{{ doc("congestion_surcharge") }}'
+
+      - name: cbd_congestion_fee
+        description: '{{ doc("cbd_congestion_fee") }}'
+ 
+      - name: airport_fee
+        description: '{{ doc("airport_fee") }}'
+
+      - name: total_amount
+        description: '{{ doc("total_amount") }}'
+      
+      - name: pick_up_date_time
+        description: '{{ doc("pick_up_date_time") }}'
+
+      - name: drop_off_date_time
+        description: '{{ doc("drop_off_date_time") }}'

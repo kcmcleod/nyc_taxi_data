@@ -6,8 +6,8 @@ models:
 
     columns:
       - name: vendor_id
-        description: A code indicating the TPEP provider that provided the record. 
-        tests:
+        description: '{{ doc("vendor_id") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
@@ -16,25 +16,25 @@ models:
                 values: [1, 2, 5, 6, 7]
 
       - name: rate_code_id
-        description: The final rate code in effect at the end of the trip.
-        tests:
+        description: '{{ doc("rate_code_id") }}'
+        data_tests:
           - accepted_values:
               arguments:
                 values: [1, 2, 3, 4, 5, 6, 99]
 
       - name: pick_up_location_id
-        description: TLC Taxi Zone in which the taximeter was engaged.
-        tests:
+        description: '{{ doc("pick_up_location_id") }}'
+        data_tests:
           - is_valid_location
 
       - name: drop_off_location_id
-        description: TLC Taxi Zone in which the taximeter was disengaged.
-        tests:
+        description: '{{ doc("drop_off_location_id") }}'
+        data_tests:
           - is_valid_location
 
       - name: payment_type_id
-        description: A numeric code signifying how the passenger paid for the trip.
-        tests:
+        description: '{{ doc("payment_type_id") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
@@ -43,98 +43,97 @@ models:
                 values: [0, 1, 2, 3, 4, 5, 6]        
 
       - name: trip_type_id
-        description: A code indicating whether the trip was a street-hail or a dispatch that is automatically assigned based on the metered rate in use but can be altered by the driver. Green taxi data only. 
-        tests:
+        description: '{{ doc("trip_type_id") }}'
+        data_tests:
           - accepted_values:
               arguments:
                 values: [99]      
 
       - name: passenger_count
-        description: The number of passengers in the vehicle. 
+        description: '{{ doc("passenger_count") }}'
 
       - name: trip_distance_miles
-        description: The elapsed trip distance in miles reported by the taximeter.
-        tests:
+        description: '{{ doc("trip_distance_miles") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
 
       - name: fare_amount
-        description: The time-and-distance fare calculated by the meter. 
-        tests:
+        description: '{{ doc("fare_amount") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
 
       - name: extra_charges
-        description: Miscellaneous extras and surcharges.
-        tests:
+        description: '{{ doc("extra_charges") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
 
       - name: mta_tax
-        description: Tax that is automatically triggered based on the metered rate in use.
-        tests:
+        description: '{{ doc("mta_tax") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
 
       - name: tip_amount
-        description: Tip amount – This field is automatically populated for credit card tips. Cash tips are not included.
-        tests:
+        description: '{{ doc("tip_amount") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
 
       - name: tolls_amount
-        description: Total amount of all tolls paid in trip.
-        tests:
+        description: '{{ doc("tolls_amount") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn                                                
 
       - name: improvement_surcharge
-        description: Improvement surcharge assessed trips at the flag drop. The improvement surcharge began being levied in 2015.
-        tests:
+        description: '{{ doc("improvement_surcharge") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn  
 
       - name: congestion_surcharge
-        description: Total amount collected in trip for NYS congestion surcharge.
+        description: '{{ doc("congestion_surcharge") }}'
 
       - name: cbd_congestion_fee
-        description: Per-trip charge for MTA's Congestion Relief Zone starting Jan. 5, 2025.
+        description: '{{ doc("cbd_congestion_fee") }}'
  
-
       - name: airport_fee
-        description: For pick up only at LaGuardia and John F. Kennedy Airports.
+        description: '{{ doc("airport_fee") }}'
 
       - name: total_amount
-        description: The total amount charged to passengers. Does not include cash tips.
-        tests:
+        description: '{{ doc("total_amount") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn  
 
       - name: store_and_fwd_flag
-        description: This flag indicates whether the trip record was held in vehicle memory before sending to the vendor, aka "store and forward," because the vehicle did not have a connection to the server.
-        tests:                                                           
+        description: '{{ doc("store_and_fwd_flag") }}'
+        data_tests:                                                           
           - accepted_values:
               arguments: 
                 values: ['Y', 'N', 'M']
       
       - name: pick_up_date_time
-        description: The date and time when the meter was engaged.
-        tests:
+        description: '{{ doc("pick_up_date_time") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn                                                              
 
       - name: drop_off_date_time
-        description: The date and time when the meter was disengaged. 
-        tests:
+        description: '{{ doc("drop_off_date_time") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn      
@@ -142,13 +141,27 @@ models:
               arguments:                                                  
                   compare_column: pick_up_date_time
 
+      - name: is_passenger_count_missing
+        description: '{{ doc("is_passenger_count_missing") }}'
+
+      - name: is_congestion_surcharge_missing
+        description: '{{ doc("is_congestion_surcharge_missing") }}'
+
+      - name: is_cbd_congestion_fee_missing
+        description: '{{ doc("is_cbd_congestion_fee_missing") }}'
+
+      - name: is_airport_fee_missing
+        description: '{{ doc("is_airport_fee_missing") }}'
+        
+                          
+
   - name: stg_nyc_taxi__green
     description: This table has GREEN taxi trips. Each row is one trip.
 
     columns:
       - name: vendor_id
-        description: A code indicating the TPEP provider that provided the record. 
-        tests:
+        description: '{{ doc("vendor_id") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
@@ -157,25 +170,25 @@ models:
                 values: [1, 2, 6]
 
       - name: rate_code_id
-        description: The final rate code in effect at the end of the trip.
-        tests:
+        description: '{{ doc("rate_code_id") }}'
+        data_tests:
           - accepted_values:
               arguments:
                 values: [1, 2, 3, 4, 5, 6, 99]
 
       - name: pick_up_location_id
-        description: TLC Taxi Zone in which the taximeter was engaged.
-        tests:
+        description: '{{ doc("pick_up_location_id") }}'
+        data_tests:
           - is_valid_location
 
       - name: drop_off_location_id
-        description: TLC Taxi Zone in which the taximeter was disengaged.
-        tests:
+        description: '{{ doc("drop_off_location_id") }}'
+        data_tests:
           - is_valid_location
 
       - name: payment_type_id
-        description: A numeric code signifying how the passenger paid for the trip.
-        tests:
+        description: '{{ doc("payment_type_id") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
@@ -184,8 +197,8 @@ models:
                 values: [0, 1, 2, 3, 4, 5, 6]        
 
       - name: trip_type_id
-        description: A code indicating whether the trip was a street-hail or a dispatch that is automatically assigned based on the metered rate in use but can be altered by the driver. Green taxi data only. 
-        tests:
+        description: '{{ doc("trip_type_id") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
@@ -194,93 +207,105 @@ models:
                 values: [1, 2, 99] 
 
       - name: passenger_count
-        description: The number of passengers in the vehicle. 
+        description: '{{ doc("passenger_count") }}'
 
       - name: trip_distance_miles
-        description: The elapsed trip distance in miles reported by the taximeter.
-        tests:
+        description: '{{ doc("trip_distance_miles") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
 
       - name: fare_amount
-        description: he time-and-distance fare calculated by the meter. 
-        tests:
+        description: '{{ doc("fare_amount") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
 
       - name: extra_charges
-        description: Miscellaneous extras and surcharges.
-        tests:
+        description: '{{ doc("extra_charges") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
 
       - name: mta_tax
-        description: Tax that is automatically triggered based on the metered rate in use.
-        tests:
+        description: '{{ doc("mta_tax") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
 
       - name: tip_amount
-        description: Tip amount – This field is automatically populated for credit card tips. Cash tips are not included.
-        tests:
+        description: '{{ doc("tip_amount") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn
 
       - name: tolls_amount
-        description: Total amount of all tolls paid in trip.
-        tests:
+        description: '{{ doc("tolls_amount") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn                                                
 
       - name: improvement_surcharge
-        description: Improvement surcharge assessed trips at the flag drop. The improvement surcharge began being levied in 2015.
-        tests:
+        description: '{{ doc("improvement_surcharge") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn  
 
       - name: congestion_surcharge
-        description: Total amount collected in trip for NYS congestion surcharge.
+        description: '{{ doc("congestion_surcharge") }}'
 
       - name: cbd_congestion_fee
-        description: Per-trip charge for MTA's Congestion Relief Zone starting Jan. 5, 2025.
-
+        description: '{{ doc("cbd_congestion_fee") }}'
+ 
       - name: airport_fee
-        description: For pick up only at LaGuardia and John F. Kennedy Airports.
+        description: '{{ doc("airport_fee") }}'
 
       - name: total_amount
-        description: The total amount charged to passengers. Does not include cash tips.
-        tests:
+        description: '{{ doc("total_amount") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn  
 
       - name: store_and_fwd_flag
-        description: This flag indicates whether the trip record was held in vehicle memory before sending to the vendor, aka "store and forward," because the vehicle did not have a connection to the server.
-        tests:                                                           
+        description: '{{ doc("store_and_fwd_flag") }}'
+        data_tests:                                                           
           - accepted_values:
               arguments: 
                 values: ['Y', 'N', 'M']
       
       - name: pick_up_date_time
-        description: The date and time when the meter was engaged.
-        tests:
+        description: '{{ doc("pick_up_date_time") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn                                                              
 
       - name: drop_off_date_time
-        description: The date and time when the meter was disengaged. 
-        tests:
+        description: '{{ doc("drop_off_date_time") }}'
+        data_tests:
           - not_null:
               config:
                 severity: warn      
           - is_greater_than: 
               arguments:                                                  
                   compare_column: pick_up_date_time
+
+      - name: is_passenger_count_missing
+        description: '{{ doc("is_passenger_count_missing") }}'
+
+      - name: is_congestion_surcharge_missing
+        description: '{{ doc("is_congestion_surcharge_missing") }}'
+
+      - name: is_cbd_congestion_fee_missing
+        description: '{{ doc("is_cbd_congestion_fee_missing") }}'
+
+      - name: is_airport_fee_missing
+        description: '{{ doc("is_airport_fee_missing") }}'

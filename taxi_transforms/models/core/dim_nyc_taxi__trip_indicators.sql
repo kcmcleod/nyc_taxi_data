@@ -4,7 +4,7 @@ with unioned_data as (
 
 trip_indicators as (
 
-    select distinct 
+    select distinct
         is_airport_fee_missing,
         is_cbd_congestion_fee_missing,
         is_congestion_surcharge_missing,
@@ -14,7 +14,7 @@ trip_indicators as (
     from unioned_data
 )
 
-select 
+select
     {{ dbt_utils.generate_surrogate_key(['service_type', 'store_and_fwd_flag', 'is_airport_fee_missing', 'is_passenger_count_missing', 'is_cbd_congestion_fee_missing', 'is_congestion_surcharge_missing']) }} as trip_indicators_id, 
     is_airport_fee_missing,
     is_cbd_congestion_fee_missing,
