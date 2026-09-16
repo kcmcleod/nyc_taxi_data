@@ -9,8 +9,8 @@ trip_indicators as (
         is_cbd_congestion_fee_missing,
         is_congestion_surcharge_missing,
         is_passenger_count_missing,
-        service_type, 
-        store_and_fwd_flag    
+        service_type,
+        store_and_fwd_flag
     from unioned_data
 )
 
@@ -20,7 +20,6 @@ select
     is_cbd_congestion_fee_missing,
     is_congestion_surcharge_missing,
     is_passenger_count_missing,
-    service_type, 
-    store_and_fwd_flag    
-
+    service_type,
+    store_and_fwd_flag
 from trip_indicators

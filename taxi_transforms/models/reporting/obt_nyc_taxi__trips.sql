@@ -1,4 +1,3 @@
-
 with trip_data as (
     select * from {{ ref('fct_nyc_taxi__trips') }}
 ),
@@ -24,15 +23,15 @@ location_data as (
 ),
 
 junk_data as (
-    select * from {{ ref('dim_nyc_taxi__trip_indicators')}}
+    select * from {{ ref('dim_nyc_taxi__trip_indicators') }}
 ),
 
 joined_data as (
-   select 
+   select
         -- basic trip info
         t.taxi_trip_id,
         jd.service_type,
-        tt.trip_type_name,        
+        tt.trip_type_name,
 
         -- costs/charges
         rc.rate_code_name,
@@ -71,21 +70,15 @@ joined_data as (
         dof.service_zone as drop_off_service_zone,
         dof.zone_name as drop_off_zone,
 
-   from trip_data as t
-   left join vendor_data as v using(vendor_id)
-   left join payment_type_data as pt using(payment_type_id)
-   left join rate_code_data as rc using(rate_code_id)
-   left join trip_type_data as tt using(trip_type_id)
-   left join location_data as pu on t.pick_up_location_id = pu.location_id
-   left join location_data as dof on t.drop_off_location_id = dof.location_id
-   left join junk_data as jd using(trip_indicators_id)
+    from trip_data as t
+    left join vendor_data as v using(vendor_id)
+    left join payment_type_data as pt using(payment_type_id)
+    left join rate_code_data as rc using(rate_code_id)
+    left join trip_type_data as tt using(trip_type_id)
+    left join location_data as pu on t.pick_up_location_id = pu.location_id
+    left join location_data as dof on t.drop_off_location_id = dof.location_id
+    left join junk_data as jd using(trip_indicators_id)
 )
-
 
 select *
 from joined_data
-
-
-
-
-

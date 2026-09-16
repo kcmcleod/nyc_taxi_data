@@ -1,25 +1,19 @@
-with
-
-source as (
-
+with source as (
     select * from {{ source('raw_nyc_taxi', 'green') }}
-
 ),
 
 renamed as (
-
     select
-
         ---------- ids
         VendorID as vendor_id,
         coalesce(RatecodeID, 99) as rate_code_id,
         PULocationID as pick_up_location_id,
         DOLocationID as drop_off_location_id,
         coalesce(cast(payment_type as integer), 5) as payment_type_id,
-        coalesce(cast(trip_type as integer), 99) trip_type_id,
-        
+        coalesce(cast(trip_type as integer), 99) as trip_type_id,
+
         ---------- numerics
-        passenger_count IS NULL as is_passenger_count_missing,
+        passenger_count is NULL as is_passenger_count_missing,
         coalesce(passenger_count, 1) as passenger_count,
         trip_distance as trip_distance_miles,
         fare_amount,
@@ -27,13 +21,13 @@ renamed as (
         mta_tax,
         tip_amount,
         tolls_amount,
-        improvement_surcharge,        
-        congestion_surcharge IS NULL as is_congestion_surcharge_missing,
+        improvement_surcharge,
+        congestion_surcharge is NULL as is_congestion_surcharge_missing,
         coalesce(congestion_surcharge, 0) as congestion_surcharge,
-        cbd_congestion_fee IS NULL as is_cbd_congestion_fee_missing,
-        coalesce(cbd_congestion_fee, 0) as cbd_congestion_fee,     
-        TRUE AS is_airport_fee_missing,  
-        cast(null as float) as airport_fee, 
+        cbd_congestion_fee is NULL as is_cbd_congestion_fee_missing,
+        coalesce(cbd_congestion_fee, 0) as cbd_congestion_fee,
+        TRUE as is_airport_fee_missing,
+        cast(NULL as float) as airport_fee,
         total_amount,
 
         ---------- string
@@ -42,7 +36,7 @@ renamed as (
         ---------- timestamps
         lpep_pickup_datetime as pick_up_date_time,
         case
-            when lpep_dropoff_datetime < pick_up_date_time then cast(null as timestamp)
+            when lpep_dropoff_datetime < pick_up_date_time then cast(NULL as timestamp)
             else lpep_dropoff_datetime
         end as drop_off_date_time
 
@@ -55,5 +49,4 @@ renamed as (
 )
 
 select * from renamed
-where pick_up_date_time != drop_off_date_time or
-    drop_off_date_time is null
+where pick_up_date_time != drop_off_date_time or drop_off_date_time is NULL
