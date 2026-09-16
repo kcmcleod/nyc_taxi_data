@@ -14,11 +14,11 @@ Rather than relying on cloud infrastructure, this pipeline leverages **DuckDB** 
 
 ## 2. Current Development Status
 This repository is currently in active development, mirroring Agile software delivery phases. 
-*   ✅ **Bronze Layer (Ingestion):** Complete. Raw Parquet files for Yellow and Green taxis are successfully mapped into DuckDB.
-*   🚧 **Silver Layer (Staging):** Currently engineering the staging models (`stg_nyc_taxi__yellow`, `stg_nyc_taxi__green`). Current focus areas include:
-    *   Standardising column names and resolving schema disparities (e.g., Parquet type inference quirks) between Yellow and Green datasets.
-    *   Handling real-world temporal anomalies by filtering 0-second trips and selectively nullifying negative-duration timestamps to protect downstream time-series metrics.
-    *   Implementing `dbt seeds` to map TLC Location IDs to explicit borough and zone names, with strict primary key testing.
+*   ✅ **Bronze Layer (Ingestion):** Complete. Raw Parquet files for Yellow and Green taxis are successfully mapped into a local DuckDB instance.
+*   ✅ **Silver Layer (Staging & Core):** Complete. Engineered staging models (`stg_nyc_taxi__yellow`, `stg_nyc_taxi__green`) to standardise column schemas and resolve temporal anomalies. Built `dbt seeds` for TLC Location mappings and consolidated data into a unified intermediate layer (`int_nyc_taxi__unioned`).
+*   ✅ **Gold Layer (Reporting & Governance):** Complete. Finalised the Medallion architecture with a One Big Table (`obt_nyc_taxi__trips`) and dimensional modeling (`dim_nyc_taxi__trip_indicators`). The pipeline enforces strict data quality contracts (TDD) and is fully documented via a centralised `docs.md` data dictionary. Codebase adheres to strict SQLFluff linting standards.
+*   🚧 **Presentation Layer (Streamlit):** Currently building a lightweight Python web application to connect directly to the DuckDB Gold layer for interactive data exploration and visualisation.
+*   📅 **Upcoming - Orchestration & Deployment:** Future phases include automating the execution graph via Apache Airflow and containerising the entire ecosystem using Docker to guarantee cross-platform reproducibility.
 
 ## 3. Engineering & Testing Standards
 Coming from a Lead Data Science Engineer background, this project applies strict software engineering principles to the modern data stack:
