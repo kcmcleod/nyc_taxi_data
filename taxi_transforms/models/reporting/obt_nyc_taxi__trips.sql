@@ -27,45 +27,16 @@ junk_data as (
 ),
 
 joined_data as (
-   select
-        -- basic trip info
-        t.taxi_trip_id,
-        jd.service_type,
+    select
+        t.* exclude (trip_indicators_id),
+        jd.* exclude (trip_indicators_id),
         tt.trip_type_name,
-
-        -- costs/charges
-        rc.rate_code_name,
-        t.airport_fee,
-        jd.is_airport_fee_missing,
-        t.cbd_congestion_fee,
-        jd.is_cbd_congestion_fee_missing,
-        t.congestion_surcharge,
-        jd.is_congestion_surcharge_missing,
-        t.extra_charges,
-        t.fare_amount,
-        t.improvement_surcharge,
-        t.mta_tax,
-        t.tip_amount,
-        t.tolls_amount,
-        t.total_amount,
-        
-        -- journey metrics
-        t.trip_distance_miles,
-        t.passenger_count,
-        jd.is_passenger_count_missing,
-
-        -- payment details
         v.vendor_name,
+        rc.rate_code_name,
         pt.payment_type_name,
-
-        -- pick up 
-        t.pick_up_date_time,
         pu.borough_name as pick_up_borough,
         pu.service_zone as pick_up_service_zone,
         pu.zone_name as pick_up_zone,
-
-        -- drop off 
-        t.drop_off_date_time,
         dof.borough_name as drop_off_borough,
         dof.service_zone as drop_off_service_zone,
         dof.zone_name as drop_off_zone
