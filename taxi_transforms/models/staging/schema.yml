@@ -11,26 +11,34 @@ models:
           - not_null:
               config:
                 severity: warn
-          - accepted_values:
+          - relationships:
               arguments:
-                values: [1, 2, 5, 6, 7]
+                to: ref('vendor_lookup')
+                field: vendor_id    
 
       - name: rate_code_id
         description: '{{ doc("rate_code_id") }}'
         data_tests:
-          - accepted_values:
-              arguments:
-                values: [1, 2, 3, 4, 5, 6, 99]
+        - relationships:
+            arguments:
+              to: ref('rate_code_lookup')
+              field: rate_code_id
 
       - name: pick_up_location_id
         description: '{{ doc("pick_up_location_id") }}'
         data_tests:
-          - is_valid_location
+        - relationships:
+            arguments:
+              to: ref('taxi_zone_lookup')
+              field: location_id    
 
       - name: drop_off_location_id
         description: '{{ doc("drop_off_location_id") }}'
         data_tests:
-          - is_valid_location
+        - relationships:
+            arguments:
+              to: ref('taxi_zone_lookup')
+              field: location_id  
 
       - name: payment_type_id
         description: '{{ doc("payment_type_id") }}'
@@ -38,9 +46,11 @@ models:
           - not_null:
               config:
                 severity: warn
-          - accepted_values:
+          - relationships:
               arguments:
-                values: [0, 1, 2, 3, 4, 5, 6]        
+                to: ref('payment_type_lookup')
+                field: payment_type_id
+    
 
       - name: trip_type_id
         description: '{{ doc("trip_type_id") }}'
@@ -165,26 +175,38 @@ models:
           - not_null:
               config:
                 severity: warn
-          - accepted_values:
+          - relationships:
               arguments:
-                values: [1, 2, 6]
+                to: ref('vendor_lookup')
+                field: vendor_id
+
 
       - name: rate_code_id
         description: '{{ doc("rate_code_id") }}'
         data_tests:
-          - accepted_values:
+          - relationships:
               arguments:
-                values: [1, 2, 3, 4, 5, 6, 99]
+                to: ref('rate_code_lookup')
+                field: rate_code_id
+
 
       - name: pick_up_location_id
         description: '{{ doc("pick_up_location_id") }}'
         data_tests:
-          - is_valid_location
+          - relationships:
+              arguments:
+                to: ref('taxi_zone_lookup')
+                field: location_id
+
 
       - name: drop_off_location_id
         description: '{{ doc("drop_off_location_id") }}'
         data_tests:
-          - is_valid_location
+          - relationships:
+              arguments:
+                to: ref('taxi_zone_lookup')
+                field: location_id
+
 
       - name: payment_type_id
         description: '{{ doc("payment_type_id") }}'
@@ -192,9 +214,10 @@ models:
           - not_null:
               config:
                 severity: warn
-          - accepted_values:
+          - relationships:
               arguments:
-                values: [0, 1, 2, 3, 4, 5, 6]        
+                to: ref('payment_type_lookup')
+                field: payment_type_id     
 
       - name: trip_type_id
         description: '{{ doc("trip_type_id") }}'
@@ -202,9 +225,10 @@ models:
           - not_null:
               config:
                 severity: warn
-          - accepted_values:
+          - relationships:
               arguments:
-                values: [1, 2, 99] 
+                to: ref('trip_type_lookup')
+                field: trip_type_id    
 
       - name: passenger_count
         description: '{{ doc("passenger_count") }}'
