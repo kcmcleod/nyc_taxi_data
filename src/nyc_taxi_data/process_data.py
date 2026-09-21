@@ -24,7 +24,7 @@ def get_parquet_files(directory: Path) -> list[Path]:
 
     all_files = directory.glob(pattern="*.parquet")
 
-    return all_files
+    return list(all_files)
 
 
 if __name__ == "__main__":  # pragma: no cover
