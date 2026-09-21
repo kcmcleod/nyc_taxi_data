@@ -27,3 +27,12 @@ jobs:
 
       - name: Run Tests with Coverage
         run: uv run pytest --cov=src/nyc_taxi_data --cov-report=term-missing
+
+      - name: Run dbt seed
+        run: make db_seed
+      
+      - name: Run dbt run
+        run: make db_run
+
+      - name: Run dbt test
+        run: make db_test
