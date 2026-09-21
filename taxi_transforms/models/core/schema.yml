@@ -6,12 +6,12 @@ models:
     columns:
       - name: trip_indicators_id
         description: '{{ doc("trip_indicators_id") }}'
-        tests:
+        data_tests:
           - not_null:
               config:
                 severity: warn
           - unique
-          
+        
       # inherited columns that have already been tested   
       - name: is_passenger_count_missing
         description: '{{ doc("is_passenger_count_missing") }}'
@@ -37,10 +37,14 @@ models:
     columns:
       - name: trip_indicators_id
         description: A generated ID for each row, with a row being a unique combination of the following fields (service_type, is_airport_fee_missing)
-        tests:
+        data_tests:
           - not_null:
               config:
                 severity: warn      
+          - relationships:
+              arguments:
+                to: ref('dim_nyc_taxi__trip_indicators')
+                field: trip_indicators_id                
 
       # inherited columns that have already been tested        
       - name: taxi_trip_id
