@@ -28,7 +28,7 @@ junk_data as (
 
 joined_data as (
     select
-        t.* exclude (trip_indicators_id),
+        t.* exclude (trip_indicators_id, rate_code_id, trip_type_id, vendor_id, payment_type_id, pick_up_location_id, drop_off_location_id), -- noqa: RF02
         jd.* exclude (trip_indicators_id),
         tt.trip_type_name,
         v.vendor_name,

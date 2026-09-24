@@ -43,24 +43,6 @@ models:
           - not_null          
 
     # inherited columns that have already been tested
-      - name: vendor_id
-        description: '{{ doc("vendor_id") }}'
-
-      - name: rate_code_id
-        description: '{{ doc("rate_code_id") }}'
-
-      - name: pick_up_location_id
-        description: '{{ doc("pick_up_location_id") }}'
-
-      - name: drop_off_location_id
-        description: '{{ doc("drop_off_location_id") }}'
-
-      - name: payment_type_id
-        description: '{{ doc("payment_type_id") }}'
-
-      - name: trip_type_id
-        description: '{{ doc("trip_type_id") }}'
-
       - name: passenger_count
         description: '{{ doc("passenger_count") }}'
 
