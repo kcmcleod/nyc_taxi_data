@@ -1,5 +1,5 @@
-.PHONY: debug test coverage db_run db_test db_docs help
-
+.PHONY: debug test coverage db_run db_test db_docs db_deps
+ 
 debug: ## run dbt debug
 	uv run --env-file .env dbt debug --project-dir taxi_transforms --profiles-dir taxi_transforms
 

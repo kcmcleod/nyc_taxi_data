@@ -32,6 +32,7 @@ jobs:
         run: |
           echo "DBT_DUCKDB_PATH=ci_pipeline.duckdb" >> .env
           echo "OBT_TABLE_NAME=obt_nyc_taxi__trips" >> .env
+          echo "TAXI_DATA_RAW_PATH=taxi_transforms/tests/fixtures/raw_data" >> .env
 
       - name: Install dbt dependencies
         run: make db_deps
