@@ -33,6 +33,9 @@ jobs:
           echo "DBT_DUCKDB_PATH=ci_pipeline.duckdb" >> .env
           echo "OBT_TABLE_NAME=obt_nyc_taxi__trips" >> .env
 
+      - name: Install dbt dependencies
+        run: make db_deps
+
       - name: Run dbt seed
         run: make db_seed
       
