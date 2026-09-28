@@ -28,6 +28,11 @@ jobs:
       - name: Run Tests with Coverage
         run: uv run pytest --cov=src/nyc_taxi_data --cov-report=term-missing
 
+      - name: Create CI environment file
+        run: |
+          echo "DBT_DUCKDB_PATH=ci_pipeline.duckdb" >> .env
+          echo "OBT_TABLE_NAME=obt_nyc_taxi__trips" >> .env
+
       - name: Run dbt seed
         run: make db_seed
       
