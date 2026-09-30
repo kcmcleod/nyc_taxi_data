@@ -77,4 +77,5 @@ renamed as (
 
 select * from renamed
 -- filter out 0 duration trips
-where pick_up_date_time != drop_off_date_time or drop_off_date_time is NULL
+where (pick_up_date_time != drop_off_date_time or drop_off_date_time is NULL) 
+    and pick_up_date_time >= '2023-01-01'

@@ -139,7 +139,10 @@ models:
         data_tests:
           - not_null:
               config:
-                severity: warn                                                              
+                severity: warn
+          - is_on_or_after_date:
+              arguments:
+                min_date: '2023-01-01'                                                              
 
       - name: drop_off_date_time
         description: '{{ doc("drop_off_date_time") }}'
@@ -310,7 +313,10 @@ models:
         data_tests:
           - not_null:
               config:
-                severity: warn                                                              
+                severity: warn      
+          - is_on_or_after_date:
+              arguments:
+                min_date: '2023-01-01'                                                               
 
       - name: drop_off_date_time
         description: '{{ doc("drop_off_date_time") }}'
