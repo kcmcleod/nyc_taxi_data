@@ -1,4 +1,4 @@
-.PHONY: debug test coverage db_run db_test db_docs db_deps
+.PHONY: debug test coverage db_run db_test db_docs db_deps db_harlequin
  
 debug: ## run dbt debug
 	uv run --env-file .env dbt debug --project-dir taxi_transforms --profiles-dir taxi_transforms
@@ -24,6 +24,9 @@ db_docs: ## build then run dbt docs
 
 db_deps: ## install dbt dependencies
 	uv run --env-file .env dbt deps --project-dir taxi_transforms --profiles-dir taxi_transforms
+
+db_harlequin: ## connect to db in terminal
+	harlequin --read-only data/taxi_data.duckdb
 
 help:
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[.a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
