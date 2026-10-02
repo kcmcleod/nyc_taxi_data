@@ -1,0 +1,3 @@
+[downloads]
+url_template = "https://d37ci6vzurychx.cloudfront.net/trip-data/{type}_tripdata_{year}-{month}.parquet"
+raw_folder = "/Users/kcm/data/nyc_taxi/"

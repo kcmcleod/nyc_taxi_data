@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install Dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Run Tests with Coverage
+        run: uv run pytest --cov=src/nyc_taxi_data --cov-report=term-missing
+
+      - name: Create CI environment file
+        run: |
+          echo "DBT_DUCKDB_PATH=ci_pipeline.duckdb" >> .env
+          echo "OBT_TABLE_NAME=obt_nyc_taxi__trips" >> .env
+          echo "TAXI_DATA_RAW_PATH=taxi_transforms/tests/fixtures/raw_data" >> .env
+
+      - name: Install dbt dependencies
+        run: make db_deps
+
+      - name: Run dbt seed
+        run: make db_seed
+      
+      - name: Run dbt run
+        run: make db_run
+
+      - name: Run dbt test
+        run: make db_test

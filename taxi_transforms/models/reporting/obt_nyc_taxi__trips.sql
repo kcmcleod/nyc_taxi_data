@@ -1,0 +1,61 @@
+with trip_data as (
+    select * from {{ ref('fct_nyc_taxi__trips') }}
+),
+
+vendor_data as (
+    select * from {{ ref('vendor_lookup') }}
+),
+
+payment_type_data as (
+    select * from {{ ref('payment_type_lookup') }}
+),
+
+rate_code_data as (
+    select * from {{ ref('rate_code_lookup') }}
+),
+
+trip_type_data as (
+    select * from {{ ref('trip_type_lookup') }}
+),
+
+location_data as (
+    select * from {{ ref('taxi_zone_lookup') }}
+),
+
+junk_data as (
+    select * from {{ ref('dim_nyc_taxi__trip_indicators') }}
+),
+
+joined_data as (
+    select
+        t.* exclude (trip_indicators_id, rate_code_id, trip_type_id, vendor_id, payment_type_id, pick_up_location_id, drop_off_location_id), -- noqa: RF02
+        jd.* exclude (trip_indicators_id),
+        tt.trip_type_name,
+        v.vendor_name,
+        rc.rate_code_name,
+        pt.payment_type_name,
+        case 
+            when pu.borough_name = 'N/A' then 'Unknown' 
+            else coalesce(pu.borough_name, 'Unknown') 
+        end as pick_up_borough,
+        pu.service_zone as pick_up_service_zone,
+        pu.zone_name as pick_up_zone,
+        case 
+            when dof.borough_name = 'N/A' then 'Unknown' 
+            else coalesce(dof.borough_name, 'Unknown') 
+        end as drop_off_borough,
+        dof.service_zone as drop_off_service_zone,
+        dof.zone_name as drop_off_zone
+
+    from trip_data as t
+    left join vendor_data as v using (vendor_id)
+    left join payment_type_data as pt using (payment_type_id)
+    left join rate_code_data as rc using (rate_code_id)
+    left join trip_type_data as tt using (trip_type_id)
+    left join location_data as pu on t.pick_up_location_id = pu.location_id
+    left join location_data as dof on t.drop_off_location_id = dof.location_id
+    left join junk_data as jd using (trip_indicators_id)
+)
+
+select *
+from joined_data

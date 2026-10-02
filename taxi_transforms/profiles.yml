@@ -1,0 +1,8 @@
+taxi_transforms:
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('DBT_DUCKDB_PATH', 'taxi_data.duckdb') }}"
+      extensions:
+        - parquet
+  target: dev
