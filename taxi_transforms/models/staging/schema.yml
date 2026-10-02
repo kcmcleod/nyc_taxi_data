@@ -150,9 +150,9 @@ models:
           - not_null:
               config:
                 severity: warn      
-          - is_greater_than: 
-              arguments:                                                  
-                  compare_column: pick_up_date_time
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "> pick_up_date_time"  
 
       - name: is_passenger_count_missing
         description: '{{ doc("is_passenger_count_missing") }}'
@@ -324,9 +324,9 @@ models:
           - not_null:
               config:
                 severity: warn      
-          - is_greater_than: 
-              arguments:                                                  
-                  compare_column: pick_up_date_time
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "> pick_up_date_time" 
 
       - name: is_passenger_count_missing
         description: '{{ doc("is_passenger_count_missing") }}'

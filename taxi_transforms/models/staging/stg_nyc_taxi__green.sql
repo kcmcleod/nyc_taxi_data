@@ -76,6 +76,16 @@ renamed as (
 )
 
 select * from renamed
--- filter out 0 duration trips
-where (pick_up_date_time != drop_off_date_time or drop_off_date_time is NULL) 
-    and pick_up_date_time >= '2023-01-01'
+where pick_up_date_time >= '2023-01-01'
+    and trip_distance_miles >= 0
+    and passenger_count >= 0
+    -- Keep trips that are still open or have a valid duration
+    and (drop_off_date_time is NULL or pick_up_date_time != drop_off_date_time)
+    -- Filter out false meter drops (under 60 seconds AND 0 passengers)
+    and not (
+        date_diff('second', pick_up_date_time, drop_off_date_time) < 60
+        and coalesce(passenger_count, 0) = 0
+    )
+    -- Filter out ghost trips: fare charged but no distance recorded
+    and not (trip_distance_miles = 0 and fare_amount > 0)
+    
