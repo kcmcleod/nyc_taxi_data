@@ -34,10 +34,16 @@ joined_data as (
         v.vendor_name,
         rc.rate_code_name,
         pt.payment_type_name,
-        pu.borough_name as pick_up_borough,
+        case 
+            when pu.borough_name = 'N/A' then 'Unknown' 
+            else coalesce(pu.borough_name, 'Unknown') 
+        end as pick_up_borough,
         pu.service_zone as pick_up_service_zone,
         pu.zone_name as pick_up_zone,
-        dof.borough_name as drop_off_borough,
+        case 
+            when dof.borough_name = 'N/A' then 'Unknown' 
+            else coalesce(dof.borough_name, 'Unknown') 
+        end as drop_off_borough,
         dof.service_zone as drop_off_service_zone,
         dof.zone_name as drop_off_zone
 
