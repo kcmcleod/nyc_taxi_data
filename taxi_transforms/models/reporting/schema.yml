@@ -43,6 +43,24 @@ models:
           - not_null          
 
     # inherited columns that have already been tested
+      - name: vendor_id
+        description: '{{ doc("vendor_id") }}'
+
+      - name: rate_code_id
+        description: '{{ doc("rate_code_id") }}'
+
+      - name: pick_up_location_id
+        description: '{{ doc("pick_up_location_id") }}'
+
+      - name: drop_off_location_id
+        description: '{{ doc("drop_off_location_id") }}'
+
+      - name: payment_type_id
+        description: '{{ doc("payment_type_id") }}'
+
+      - name: trip_type_id
+        description: '{{ doc("trip_type_id") }}'
+
       - name: passenger_count
         description: '{{ doc("passenger_count") }}'
 
@@ -117,3 +135,175 @@ models:
 
       - name: is_airport_fee_missing
         description: '{{ doc("is_airport_fee_missing") }}'
+  
+  - name: rpt_nyc_taxi__daily_metrics
+    description: customised table for streamlit
+
+    columns:
+      - name: agg_trip_date
+        description: '{{ doc("agg_trip_date") }}'
+        data_tests:
+          - not_null  
+      - name: pick_up_borough
+        description: '{{ doc("pick_up_borough") }}'
+        data_tests:
+          - not_null  
+          - relationships:
+              arguments:
+                to: ref('taxi_zone_lookup')
+                field: borough_name              
+      - name: drop_off_borough
+        description: '{{ doc("drop_off_borough") }}'
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('taxi_zone_lookup')
+                field: borough_name    
+      - name: total_trip_count
+        description: '{{ doc("total_trip_count") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "> 0"
+      - name: total_passenger_count
+        description: '{{ doc("total_passenger_count") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"          
+      - name: total_trip_distance_miles
+        description: '{{ doc("total_trip_distance_miles") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"          
+      - name: total_fare_amount
+        description: '{{ doc("total_fare_amount") }}'
+        data_tests:
+          - not_null
+      - name: total_amount_charged
+        description: '{{ doc("total_amount_charged") }}'
+        data_tests:
+          - not_null      
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= total_fare_amount"   
+
+
+  - name: rpt_nyc_taxi__weekly_metrics
+    description: customised table for streamlit
+
+    columns:
+      - name: agg_trip_date
+        description: '{{ doc("agg_trip_date") }}'
+        data_tests:
+          - not_null  
+      - name: pick_up_borough
+        description: '{{ doc("pick_up_borough") }}'
+        data_tests:
+          - not_null  
+          - relationships:
+              arguments:
+                to: ref('taxi_zone_lookup')
+                field: borough_name              
+      - name: drop_off_borough
+        description: '{{ doc("drop_off_borough") }}'
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('taxi_zone_lookup')
+                field: borough_name    
+      - name: total_trip_count
+        description: '{{ doc("total_trip_count") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "> 0"
+      - name: total_passenger_count
+        description: '{{ doc("total_passenger_count") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"          
+      - name: total_trip_distance_miles
+        description: '{{ doc("total_trip_distance_miles") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"          
+      - name: total_fare_amount
+        description: '{{ doc("total_fare_amount") }}'
+        data_tests:
+          - not_null
+      - name: total_amount_charged
+        description: '{{ doc("total_amount_charged") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= total_fare_amount"   
+
+  - name: rpt_nyc_taxi__monthly_metrics
+    description: customised table for streamlit
+
+    columns:
+      - name: agg_trip_date
+        description: '{{ doc("agg_trip_date") }}'
+        data_tests:
+          - not_null  
+      - name: pick_up_borough
+        description: '{{ doc("pick_up_borough") }}'
+        data_tests:
+          - not_null  
+          - relationships:
+              arguments:
+                to: ref('taxi_zone_lookup')
+                field: borough_name              
+      - name: drop_off_borough
+        description: '{{ doc("drop_off_borough") }}'
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('taxi_zone_lookup')
+                field: borough_name    
+      - name: total_trip_count
+        description: '{{ doc("total_trip_count") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "> 0"
+      - name: total_passenger_count
+        description: '{{ doc("total_passenger_count") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"          
+      - name: total_trip_distance_miles
+        description: '{{ doc("total_trip_distance_miles") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"          
+      - name: total_fare_amount
+        description: '{{ doc("total_fare_amount") }}'
+        data_tests:
+          - not_null
+      - name: total_amount_charged
+        description: '{{ doc("total_amount_charged") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " >= total_fare_amount"         

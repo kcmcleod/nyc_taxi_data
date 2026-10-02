@@ -174,4 +174,28 @@ For the field "congestion_surcharge" was a missing value replaced with a default
 For the field "passenger_count" was a missing value replaced with a default value (1) during the ETL? True for yes and False for no.
 {% enddocs %}
 
+<!-- metrics -->
+{% docs total_trip_count %}
+Combined number of trips that took place during this period (day, week or month). Period is defined by the view.
+{% enddocs %}
 
+{% docs total_passenger_count %}
+Combined number of passengers that took a journey during this period (day, week or month). Period is defined by the view.
+{% enddocs %}
+
+{% docs total_trip_distance_miles %}
+Combined number of miles travelled during this period (day, week or month). Period is defined by the view.
+{% enddocs %}
+
+{% docs total_fare_amount %}
+Combined total fare for all trips that took place during this period (day, week or month). Period is defined by the view.
+{% enddocs %}
+
+{% docs total_amount_charged %}
+Combined total amount charged (including feeds) for all trips that took place during this period(day, week or month). Period is defined by the view.
+{% enddocs %}
+agg_trip_date
+
+{% docs agg_trip_date %}
+Date that defines the period (day, week or month). Period is defined by the view.
+{% enddocs %}
