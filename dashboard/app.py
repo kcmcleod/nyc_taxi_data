@@ -1,5 +1,5 @@
 import streamlit as st
-from components import comp_availability, comp_line, comp_table  # tab_heatmap
+from components import comp_availability, comp_heatmap, comp_line, comp_table
 from data_access import get_dataset_date_bounds
 
 st.set_page_config(page_title="NYC Taxi Dashboard", layout="wide")
@@ -42,7 +42,7 @@ with tab_line:
 
 with tab_heatmap:
     st.header("Data Section")
-    st.write("Here is where your data tables or charts go.")
+    comp_heatmap.render(start_date, end_date)
 
 with tab_table:
     st.write(
