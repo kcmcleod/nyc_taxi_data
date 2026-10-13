@@ -24,12 +24,12 @@ def render(start_date: date, end_date: date, min_date: date, max_date: date):
             options=["Monthly", "Weekly"],
         )
 
-        dedsired_time_range = st.selectbox(
+        desired_time_range = st.selectbox(
             "Data range:",
             options=["From above selection", "Full range (ie all time)"],
         )
 
-    if dedsired_time_range == "From above selection":
+    if desired_time_range == "From above selection":
         chosen_start_date = start_date
         chosen_end_date = end_date
     else:
