@@ -7,7 +7,7 @@ test: ## run python tests
 	uv run pytest src/ dashboard/
 
 coverage: ## run python coverage
-	uv run pytest src/ dashboard/ --cov=nyc_taxi_data --cov-report=term-missing
+	uv run pytest src/ dashboard/ --cov=nyc_taxi_data --cov=dashboard --cov-report=term-missing
 
 db_run: ## build dbt models
 	uv run --env-file .env dbt run --project-dir taxi_transforms --profiles-dir taxi_transforms
