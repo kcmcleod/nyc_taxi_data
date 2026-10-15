@@ -66,10 +66,6 @@ renamed as (
         end as drop_off_date_time
 
     from source
-
-    {% if target.name == 'dev' %}
-        limit 100000
-    {% endif %}
 )
 
 select * exclude (total_amount),
@@ -82,7 +78,7 @@ select * exclude (total_amount),
 from renamed
 where pick_up_date_time >= '2023-01-01'
     and trip_distance_miles >= 0
-    and passenger_count >= 0
+    and passenger_count between 0 and 8
     -- Keep trips that are still open or have a valid duration
     and (drop_off_date_time is NULL or pick_up_date_time != drop_off_date_time)
     -- Filter out false meter drops (under 60 seconds AND 0 passengers)
@@ -90,6 +86,8 @@ where pick_up_date_time >= '2023-01-01'
         date_diff('second', pick_up_date_time, drop_off_date_time) < 60
         and coalesce(passenger_count, 0) = 0
     )
+    -- Filter junk mta
+    and mta_tax between 0 and 1.5
     -- Filter out refunds, disputes, and voided trips
     and fare_amount >= 0
     and total_amount >= 0
@@ -103,3 +101,10 @@ where pick_up_date_time >= '2023-01-01'
     and not (trip_distance_miles > 10 and (fare_amount / nullif(trip_distance_miles, 0)) > 10)
     -- Filter out really low CPM
     and not (trip_distance_miles > 5 and (fare_amount / nullif(trip_distance_miles, 0)) < 0.50)
+    -- Filter out jounerys longer than 6 hours
+    and date_diff('hour', pick_up_date_time, drop_off_date_time) <= 6
+
+
+{% if target.name == 'dev' %}
+    limit 100000
+{% endif %}

@@ -5,6 +5,10 @@ models:
     description: This table has YELLOW taxi trips. Each row is one trip.
 
     data_tests:
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          arguments:
+            min_value: 90000
+
       - dbt_utils.expression_is_true:
           arguments:
             expression: >
@@ -23,6 +27,12 @@ models:
               ) < 0.05
           config:
             severity: warn
+      # check trips are less than 6 hours
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "date_diff('hour', pick_up_date_time, drop_off_date_time) < 6"
+          config:
+            severity: warn  
 
     columns:
       - name: vendor_id
@@ -47,6 +57,11 @@ models:
       - name: pick_up_location_id
         description: '{{ doc("pick_up_location_id") }}'
         data_tests:
+        # Less resources than join below; may switch if join is too expensive
+        # - dbt_expectations.expect_column_values_to_be_between:
+        #       arguments:
+        #         min_value: 1
+        #         max_value: 265
         - relationships:
             arguments:
               to: ref('taxi_zone_lookup')
@@ -55,6 +70,11 @@ models:
       - name: drop_off_location_id
         description: '{{ doc("drop_off_location_id") }}'
         data_tests:
+        # Less resources than join below; may switch if join is too expensive
+        # - dbt_expectations.expect_column_values_to_be_between:
+        #       arguments:
+        #         min_value: 1
+        #         max_value: 265
         - relationships:
             arguments:
               to: ref('taxi_zone_lookup')
@@ -81,6 +101,13 @@ models:
 
       - name: passenger_count
         description: '{{ doc("passenger_count") }}'
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 8
+              config:
+                severity: warn
 
       - name: trip_distance_miles
         description: '{{ doc("trip_distance_miles") }}'
@@ -92,6 +119,7 @@ models:
               arguments:
                 min_value: 0
                 max_value: 100
+                row_condition: 'rate_code_id not in (4, 5)' # negotiated rates
                 config:
                   severity: warn
 
@@ -215,7 +243,7 @@ models:
                 severity: warn      
           - dbt_utils.expression_is_true:
               arguments:
-                expression: "> pick_up_date_time"  
+                expression: "> pick_up_date_time" 
 
       - name: is_passenger_count_missing
         description: '{{ doc("is_passenger_count_missing") }}'
@@ -235,6 +263,10 @@ models:
     description: This table has GREEN taxi trips. Each row is one trip.
 
     data_tests:
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          arguments:
+            min_value: 90000
+
       - dbt_utils.expression_is_true:
           arguments:
             expression: >
@@ -253,6 +285,12 @@ models:
               ) < 0.05
           config:
             severity: warn
+      # check trips are less than 6 hours
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "date_diff('hour', pick_up_date_time, drop_off_date_time) < 6"
+          config:
+            severity: warn              
 
     columns:
       - name: vendor_id
@@ -277,6 +315,11 @@ models:
       - name: pick_up_location_id
         description: '{{ doc("pick_up_location_id") }}'
         data_tests:
+        # Less resources than join below; may switch if join is too expensive
+        # - dbt_expectations.expect_column_values_to_be_between:
+        #       arguments:
+        #         min_value: 1
+        #         max_value: 265
           - relationships:
               arguments:
                 to: ref('taxi_zone_lookup')
@@ -285,6 +328,11 @@ models:
       - name: drop_off_location_id
         description: '{{ doc("drop_off_location_id") }}'
         data_tests:
+        # Less resources than join below; may switch if join is too expensive
+        # - dbt_expectations.expect_column_values_to_be_between:
+        #       arguments:
+        #         min_value: 1
+        #         max_value: 265        
           - relationships:
               arguments:
                 to: ref('taxi_zone_lookup')
@@ -314,6 +362,13 @@ models:
 
       - name: passenger_count
         description: '{{ doc("passenger_count") }}'
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 8
+              config:
+                severity: warn
 
       - name: trip_distance_miles
         description: '{{ doc("trip_distance_miles") }}'
@@ -325,6 +380,7 @@ models:
               arguments:
                 min_value: 0
                 max_value: 100
+                row_condition: 'rate_code_id not in (4, 5)' # negiotated rates
                 config:
                   severity: warn
 
