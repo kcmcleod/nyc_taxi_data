@@ -72,7 +72,14 @@ renamed as (
     {% endif %}
 )
 
-select * from renamed
+select * exclude (total_amount),
+    -- Reconstruct the total amount to fix upstream meter addition bugs
+    (
+        fare_amount + extra_charges + mta_tax + tip_amount + tolls_amount +
+        improvement_surcharge + congestion_surcharge + cbd_congestion_fee +
+        coalesce(airport_fee, 0)
+    ) as total_amount
+from renamed
 where pick_up_date_time >= '2023-01-01'
     and trip_distance_miles >= 0
     and passenger_count >= 0
@@ -83,5 +90,16 @@ where pick_up_date_time >= '2023-01-01'
         date_diff('second', pick_up_date_time, drop_off_date_time) < 60
         and coalesce(passenger_count, 0) = 0
     )
+    -- Filter out refunds, disputes, and voided trips
+    and fare_amount >= 0
+    and total_amount >= 0
     -- Filter out ghost trips: fare charged but no distance recorded
     and not (trip_distance_miles = 0 and fare_amount > 0)
+    -- Short trips (< 1 mile): Allow high CPM due to fixed base fares and traffic idling
+    and not (trip_distance_miles < 1 and (fare_amount / nullif(trip_distance_miles, 0)) > 100)
+    -- Standard trips (1 to 10 miles): Cap at a reasonable heavy traffic rate ($20/mile)
+    and not (trip_distance_miles >= 1 and trip_distance_miles <= 10 and (fare_amount / nullif(trip_distance_miles, 0)) > 20)
+    -- Long hauls (> 10 miles): Cap at $10/mile 
+    and not (trip_distance_miles > 10 and (fare_amount / nullif(trip_distance_miles, 0)) > 10)
+    -- Filter out really low CPM
+    and not (trip_distance_miles > 5 and (fare_amount / nullif(trip_distance_miles, 0)) < 0.50)
