@@ -1,3 +1,9 @@
+{{
+    config(
+        materialized='table'
+    )
+}}
+
 with unioned_data as (
     select * from {{ ref('int_nyc_taxi__unioned') }}
 ),
