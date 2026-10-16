@@ -28,10 +28,10 @@ models:
               ) < 0.05
           config:
             severity: warn
-      # check trips are less than 6 hours
+      # check trips are 6 hours or less
       - dbt_utils.expression_is_true:
           arguments:
-            expression: "date_diff('hour', pick_up_date_time, drop_off_date_time) < 6"
+            expression: "date_diff('hour', pick_up_date_time, drop_off_date_time) <= 6"
           config:
             severity: warn  
 
@@ -132,7 +132,7 @@ models:
                 severity: warn
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
-                min_value: 0 
+                min_value: 0.01 
 
       - name: extra_charges
         description: '{{ doc("extra_charges") }}'
@@ -217,7 +217,7 @@ models:
                 severity: warn  
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
-                min_value: 0
+                min_value: 0.01
 
       - name: store_and_fwd_flag
         description: '{{ doc("store_and_fwd_flag") }}'
@@ -287,10 +287,10 @@ models:
               ) < 0.05
           config:
             severity: warn
-      # check trips are less than 6 hours
+      # check trips are 6 hours or less
       - dbt_utils.expression_is_true:
           arguments:
-            expression: "date_diff('hour', pick_up_date_time, drop_off_date_time) < 6"
+            expression: "date_diff('hour', pick_up_date_time, drop_off_date_time) <= 6"
           config:
             severity: warn              
 
@@ -394,7 +394,7 @@ models:
                 severity: warn
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
-                min_value: 0 
+                min_value: 0.01 
 
       - name: extra_charges
         description: '{{ doc("extra_charges") }}'
@@ -427,7 +427,6 @@ models:
               arguments:
                 min_value: 0 
 
-
       - name: tolls_amount
         description: '{{ doc("tolls_amount") }}'
         data_tests:
@@ -438,7 +437,6 @@ models:
               arguments:
                 min_value: 0 
              
-
       - name: improvement_surcharge
         description: '{{ doc("improvement_surcharge") }}'
         data_tests:
@@ -481,7 +479,7 @@ models:
                 severity: warn
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
-                min_value: 0 
+                min_value: 0.01 
 
       - name: store_and_fwd_flag
         description: '{{ doc("store_and_fwd_flag") }}'

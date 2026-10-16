@@ -91,8 +91,8 @@ where pick_up_date_time >= '2023-01-01'
     -- Filter junk mta
     and mta_tax between 0 and 1.5
     -- Filter out refunds, disputes, and voided trips
-    and fare_amount >= 0
-    and total_amount >= 0
+    and fare_amount > 0
+    and total_amount > 0
     -- Filter out ghost trips: fare charged but no distance recorded
     and not (trip_distance_miles = 0 and fare_amount > 0)
     -- Short trips (< 1 mile): Allow high CPM due to fixed base fares and traffic idling
