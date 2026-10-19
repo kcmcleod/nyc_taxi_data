@@ -20,7 +20,9 @@ cleaned_data as (
 )
 
 {% if target.name == 'dev' %}
-    -- set up for duckdb
+    -- Architectural Note: Using ANY_VALUE() + GROUP BY instead of the standard QUALIFY ROW_NUMBER() OVER()
+    -- The window function causes Out-of-Memory (OOM) crashes on local hardware for this dataset volume.
+    -- This workaround achieves identical deduplication with significantly lower RAM overhead.
     select
         {{ dbt_utils.generate_surrogate_key(['service_type', 'vendor_id', 'rate_code_id', 'pick_up_location_id', 'drop_off_location_id', 'payment_type_id', 'trip_type_id', 'pick_up_date_time', 'drop_off_date_time', 'fare_amount', 'total_amount', 'trip_distance_miles']) }} as taxi_trip_id,
         ANY_VALUE(columns(*))
@@ -28,7 +30,7 @@ cleaned_data as (
     group by taxi_trip_id -- stops dups
 {% else %}
      -- set up for analytics awarehouse
-        select 
+    select 
         {{ dbt_utils.generate_surrogate_key(['service_type', 'vendor_id', 'rate_code_id', 'pick_up_location_id', 'drop_off_location_id', 'payment_type_id', 'trip_type_id', 'pick_up_date_time', 'drop_off_date_time', 'fare_amount', 'total_amount', 'trip_distance_miles']) }} as taxi_trip_id,
         *
     from cleaned_data
