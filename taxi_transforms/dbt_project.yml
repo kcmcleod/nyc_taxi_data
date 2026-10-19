@@ -34,8 +34,6 @@ models:
       +materialized: view
     intermediate:
       +materialized: table
-    core:
-      +materialized: view
     reporting:
       +materialized: "{{ 'view' if target.name == 'dev' else 'table' }}"
 flags:
