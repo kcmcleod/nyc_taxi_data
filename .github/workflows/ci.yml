@@ -20,13 +20,10 @@ jobs:
           enable-cache: true
 
       - name: Set up Python
-        run: uv python install
+        run: uv python install 3.13
 
       - name: Install Dependencies
         run: uv sync --all-extras --dev
-
-      - name: Run Tests with Coverage
-        run: uv run pytest --cov=src/nyc_taxi_data --cov-report=term-missing
 
       - name: Create CI environment file
         run: |
@@ -45,3 +42,6 @@ jobs:
 
       - name: Run dbt test
         run: make db_test
+
+      - name: Run Tests with Coverage
+        run: uv run --env-file .env pytest --ignore=taxi_transforms --cov=src/nyc_taxi_data --cov-report=term-missing
