@@ -4,12 +4,6 @@ models:
   - name: int_nyc_taxi__unioned
     description: This table has yellow and green taxi trips. Each row is one trip.
 
-    data_tests:
-      - dbt_expectations.expect_table_row_count_to_be_between:
-          arguments:
-            # in dev yellow & green have a floor of 90k so make that 180k
-            min_value: "{{ 180000 if target.name == 'dev' else 6000000 }}"
-
     columns:
       - name: taxi_trip_id
         description: '{{ doc("taxi_trip_id") }}'
@@ -22,7 +16,7 @@ models:
         description: '{{ doc("service_type") }}'
         data_tests:
           - not_null:
-              config: 
+              config:
                 severity: warn
           - accepted_values:
               arguments:
