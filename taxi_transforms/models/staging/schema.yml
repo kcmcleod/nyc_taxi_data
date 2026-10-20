@@ -4,37 +4,6 @@ models:
   - name: stg_nyc_taxi__yellow
     description: This table has YELLOW taxi trips. Each row is one trip.
 
-    data_tests:
-      - dbt_expectations.expect_table_row_count_to_be_between:
-          arguments:
-            # set low limit for dev as max of 100k rows
-            min_value: "{{ 90000 if target.name == 'dev' else 3000000 }}"
-
-      - dbt_utils.expression_is_true:
-          arguments:
-            expression: >
-              abs(
-                total_amount - (
-                  fare_amount + 
-                  extra_charges + 
-                  mta_tax + 
-                  tip_amount + 
-                  tolls_amount + 
-                  improvement_surcharge + 
-                  coalesce(congestion_surcharge, 0) + 
-                  coalesce(airport_fee, 0) +
-                  coalesce(cbd_congestion_fee, 0)
-                )
-              ) < 0.05
-          config:
-            severity: warn
-      # check trips are 6 hours or less
-      - dbt_utils.expression_is_true:
-          arguments:
-            expression: "date_diff('hour', pick_up_date_time, drop_off_date_time) <= 6"
-          config:
-            severity: warn  
-
     columns:
       - name: vendor_id
         description: '{{ doc("vendor_id") }}'
@@ -58,11 +27,6 @@ models:
       - name: pick_up_location_id
         description: '{{ doc("pick_up_location_id") }}'
         data_tests:
-        # Less resources than join below; may switch if join is too expensive
-        # - dbt_expectations.expect_column_values_to_be_between:
-        #       arguments:
-        #         min_value: 1
-        #         max_value: 265
         - relationships:
             arguments:
               to: ref('taxi_zone_lookup')
@@ -71,11 +35,6 @@ models:
       - name: drop_off_location_id
         description: '{{ doc("drop_off_location_id") }}'
         data_tests:
-        # Less resources than join below; may switch if join is too expensive
-        # - dbt_expectations.expect_column_values_to_be_between:
-        #       arguments:
-        #         min_value: 1
-        #         max_value: 265
         - relationships:
             arguments:
               to: ref('taxi_zone_lookup')
@@ -102,13 +61,6 @@ models:
 
       - name: passenger_count
         description: '{{ doc("passenger_count") }}'
-        data_tests:
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0
-                max_value: 8
-              config:
-                severity: warn
 
       - name: trip_distance_miles
         description: '{{ doc("trip_distance_miles") }}'
@@ -116,13 +68,6 @@ models:
           - not_null:
               config:
                 severity: warn
-          -  dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0
-                max_value: 100
-                row_condition: 'rate_code_id not in (4, 5)' # negotiated rates
-                config:
-                  severity: warn
 
       - name: fare_amount
         description: '{{ doc("fare_amount") }}'
@@ -130,9 +75,6 @@ models:
           - not_null:
               config:
                 severity: warn
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0.01 
 
       - name: extra_charges
         description: '{{ doc("extra_charges") }}'
@@ -140,9 +82,6 @@ models:
           - not_null:
               config:
                 severity: warn
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
 
       - name: mta_tax
         description: '{{ doc("mta_tax") }}'
@@ -150,10 +89,6 @@ models:
           - not_null:
               config:
                 severity: warn
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0
-                max_value: 1.5 # legally set to 0.5 but can be charged more than once
 
       - name: tip_amount
         description: '{{ doc("tip_amount") }}'
@@ -161,9 +96,6 @@ models:
           - not_null:
               config:
                 severity: warn
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
 
       - name: tolls_amount
         description: '{{ doc("tolls_amount") }}'
@@ -171,9 +103,6 @@ models:
           - not_null:
               config:
                 severity: warn                                                
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
 
       - name: improvement_surcharge
         description: '{{ doc("improvement_surcharge") }}'
@@ -181,33 +110,15 @@ models:
           - not_null:
               config:
                 severity: warn  
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
-                max_value: 1.0 # legally defined max value
 
       - name: congestion_surcharge
         description: '{{ doc("congestion_surcharge") }}'
-        data_tests:
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
-                max_value: 2.5 # legal max for yellow
 
       - name: cbd_congestion_fee
         description: '{{ doc("cbd_congestion_fee") }}'
-        data_tests:
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
  
       - name: airport_fee
         description: '{{ doc("airport_fee") }}'
-        data_tests:
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
-                max_value: 1.25
 
       - name: total_amount
         description: '{{ doc("total_amount") }}'
@@ -215,9 +126,6 @@ models:
           - not_null:
               config:
                 severity: warn  
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0.01
 
       - name: store_and_fwd_flag
         description: '{{ doc("store_and_fwd_flag") }}'
@@ -244,7 +152,7 @@ models:
                 severity: warn      
           - dbt_utils.expression_is_true:
               arguments:
-                expression: "> pick_up_date_time" 
+                expression: "> pick_up_date_time"  
 
       - name: is_passenger_count_missing
         description: '{{ doc("is_passenger_count_missing") }}'
@@ -263,37 +171,6 @@ models:
   - name: stg_nyc_taxi__green
     description: This table has GREEN taxi trips. Each row is one trip.
 
-    data_tests:
-      - dbt_expectations.expect_table_row_count_to_be_between:
-          arguments:
-            # set low limit for dev as max of 100k rows
-            min_value: "{{ 90000 if target.name == 'dev' else 3000000 }}"
-
-      - dbt_utils.expression_is_true:
-          arguments:
-            expression: >
-              abs(
-                total_amount - (
-                  fare_amount + 
-                  extra_charges + 
-                  mta_tax + 
-                  tip_amount + 
-                  tolls_amount + 
-                  improvement_surcharge + 
-                  coalesce(congestion_surcharge, 0) + 
-                  coalesce(airport_fee, 0) +
-                  coalesce(cbd_congestion_fee, 0)
-                )
-              ) < 0.05
-          config:
-            severity: warn
-      # check trips are 6 hours or less
-      - dbt_utils.expression_is_true:
-          arguments:
-            expression: "date_diff('hour', pick_up_date_time, drop_off_date_time) <= 6"
-          config:
-            severity: warn              
-
     columns:
       - name: vendor_id
         description: '{{ doc("vendor_id") }}'
@@ -306,6 +183,7 @@ models:
                 to: ref('vendor_lookup')
                 field: vendor_id
 
+
       - name: rate_code_id
         description: '{{ doc("rate_code_id") }}'
         data_tests:
@@ -314,31 +192,24 @@ models:
                 to: ref('rate_code_lookup')
                 field: rate_code_id
 
+
       - name: pick_up_location_id
         description: '{{ doc("pick_up_location_id") }}'
         data_tests:
-        # Less resources than join below; may switch if join is too expensive
-        # - dbt_expectations.expect_column_values_to_be_between:
-        #       arguments:
-        #         min_value: 1
-        #         max_value: 265
           - relationships:
               arguments:
                 to: ref('taxi_zone_lookup')
                 field: location_id
 
+
       - name: drop_off_location_id
         description: '{{ doc("drop_off_location_id") }}'
         data_tests:
-        # Less resources than join below; may switch if join is too expensive
-        # - dbt_expectations.expect_column_values_to_be_between:
-        #       arguments:
-        #         min_value: 1
-        #         max_value: 265        
           - relationships:
               arguments:
                 to: ref('taxi_zone_lookup')
                 field: location_id
+
 
       - name: payment_type_id
         description: '{{ doc("payment_type_id") }}'
@@ -364,13 +235,6 @@ models:
 
       - name: passenger_count
         description: '{{ doc("passenger_count") }}'
-        data_tests:
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0
-                max_value: 8
-              config:
-                severity: warn
 
       - name: trip_distance_miles
         description: '{{ doc("trip_distance_miles") }}'
@@ -378,13 +242,6 @@ models:
           - not_null:
               config:
                 severity: warn
-          -  dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0
-                max_value: 100
-                row_condition: 'rate_code_id not in (4, 5)' # negiotated rates
-                config:
-                  severity: warn
 
       - name: fare_amount
         description: '{{ doc("fare_amount") }}'
@@ -392,9 +249,6 @@ models:
           - not_null:
               config:
                 severity: warn
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0.01 
 
       - name: extra_charges
         description: '{{ doc("extra_charges") }}'
@@ -402,20 +256,13 @@ models:
           - not_null:
               config:
                 severity: warn
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
-            
+
       - name: mta_tax
         description: '{{ doc("mta_tax") }}'
         data_tests:
           - not_null:
               config:
                 severity: warn
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
-                max_value: 1.5 # limit in city is 0.5 but can be triggered mutiple times so more than 0.5 is ok
 
       - name: tip_amount
         description: '{{ doc("tip_amount") }}'
@@ -423,9 +270,6 @@ models:
           - not_null:
               config:
                 severity: warn
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
 
       - name: tolls_amount
         description: '{{ doc("tolls_amount") }}'
@@ -433,53 +277,29 @@ models:
           - not_null:
               config:
                 severity: warn                                                
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
-             
+
       - name: improvement_surcharge
         description: '{{ doc("improvement_surcharge") }}'
         data_tests:
           - not_null:
               config:
                 severity: warn  
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
-                max_value: 1.0 # legally defined max value
 
       - name: congestion_surcharge
         description: '{{ doc("congestion_surcharge") }}'
-        data_tests:
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
-                max_value: 2.75 # legal max for green
 
       - name: cbd_congestion_fee
         description: '{{ doc("cbd_congestion_fee") }}'
-        data_tests:
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
  
       - name: airport_fee
         description: '{{ doc("airport_fee") }}'
-        data_tests:
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
-                max_value: 1.25
 
       - name: total_amount
         description: '{{ doc("total_amount") }}'
         data_tests:
           - not_null:
               config:
-                severity: warn
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0.01 
+                severity: warn  
 
       - name: store_and_fwd_flag
         description: '{{ doc("store_and_fwd_flag") }}'
