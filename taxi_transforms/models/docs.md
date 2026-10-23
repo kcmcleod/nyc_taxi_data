@@ -141,9 +141,9 @@ A generated ID for each row in junk dim, with a row being a unique combination o
 A code indicating whether the trip was a street-hail or a dispatch that is automatically assigned based on the metered rate in use but can be altered by the driver. Green taxi data only. 
 {% enddocs %}
 
-
 {% docs trip_type_name %}
-<!-- Add description for trip_type_name here -->
+Text label indicating is this trip was a street-hail or dispatch. Automatically assigned based on the metered rate in use but can be altered by the driver. 
+only applies to Green taxi data.
 {% enddocs %}
 
 {% docs vendor_id %}
@@ -194,7 +194,6 @@ Combined total fare for all trips that took place during this period (day, week 
 {% docs total_amount_charged %}
 Combined total amount charged (including feeds) for all trips that took place during this period(day, week or month). Period is defined by the view.
 {% enddocs %}
-agg_trip_date
 
 {% docs agg_trip_date %}
 Date that defines the period (day, week or month). Period is defined by the view.

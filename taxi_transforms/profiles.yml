@@ -2,7 +2,11 @@ taxi_transforms:
   outputs:
     dev:
       type: duckdb
-      path: "{{ env_var('DBT_DUCKDB_PATH', 'taxi_data.duckdb') }}"
+      path: "{{ env_var('DBT_DUCKDB_PATH', '../data/taxi_data.duckdb') }}"
       extensions:
         - parquet
-  target: dev
+    demo:
+      type: duckdb
+      path: "{{ env_var('DBT_DUCKDB_PATH', '../data/demo_taxi.duckdb') }}"
+      extensions:
+  target: "{{ env_var('DBT_TARGET', 'dev') }}"

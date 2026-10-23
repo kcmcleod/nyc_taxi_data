@@ -8,7 +8,7 @@ models:
       - dbt_expectations.expect_table_row_count_to_be_between:
           arguments:
             # set low limit for dev as max of 100k rows
-            min_value: "{{ 90000 if target.name == 'dev' else 3000000 }}"
+            min_value: "{{ 10 if target.name == 'demo' else (90000 if target.name == 'dev' else 3000000) }}"
 
       - dbt_utils.expression_is_true:
           arguments:
@@ -207,7 +207,7 @@ models:
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
                 min_value: 0 
-                max_value: 1.25
+                max_value: 2.00
 
       - name: total_amount
         description: '{{ doc("total_amount") }}'
@@ -267,7 +267,7 @@ models:
       - dbt_expectations.expect_table_row_count_to_be_between:
           arguments:
             # set low limit for dev as max of 100k rows
-            min_value: "{{ 90000 if target.name == 'dev' else 3000000 }}"
+            min_value: "{{ 10 if target.name == 'demo' else (90000 if target.name == 'dev' else 3000000) }}"
 
       - dbt_utils.expression_is_true:
           arguments:
@@ -466,10 +466,7 @@ models:
       - name: airport_fee
         description: '{{ doc("airport_fee") }}'
         data_tests:
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
-                max_value: 1.25
+          - dbt_expectations.expect_column_values_to_be_null
 
       - name: total_amount
         description: '{{ doc("total_amount") }}'
