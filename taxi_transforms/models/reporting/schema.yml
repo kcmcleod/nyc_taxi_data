@@ -154,7 +154,7 @@ models:
       - dbt_expectations.expect_table_row_count_to_be_between:
           arguments:
             # 2k based on number of rows in my dev data. 50k based on a guess from AI
-            min_value: "{{ 2000 if target.name == 'dev' else 50000 }}"
+            min_value: "{{ 986 if target.name == 'demo' else (2000 if target.name == 'dev' else 50000) }}"
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:
@@ -241,7 +241,7 @@ models:
       - dbt_expectations.expect_table_row_count_to_be_between:
           arguments:
             # 800 based on number of rows in my dev data. 8k based on a guess from AI
-            min_value: "{{ 800 if target.name == 'dev' else 8000 }}"
+            min_value: "{{ 403 if target.name == 'demo' else (800 if target.name == 'dev' else 8000) }}"
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:
@@ -328,7 +328,7 @@ models:
       - dbt_expectations.expect_table_row_count_to_be_between:
           arguments:
             # 350 based on number of rows in my dev data. 4k based on a guess from AI
-            min_value: "{{ 350 if target.name == 'dev' else 4000 }}"
+            min_value: "{{ 148 if target.name == 'demo' else (350 if target.name == 'dev' else 4000) }}"
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:

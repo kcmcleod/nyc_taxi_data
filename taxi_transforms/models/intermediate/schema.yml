@@ -8,7 +8,7 @@ models:
       - dbt_expectations.expect_table_row_count_to_be_between:
           arguments:
             # in dev yellow & green have a floor of 90k so make that 180k
-            min_value: "{{ 180000 if target.name == 'dev' else 6000000 }}"
+            min_value: "{{ 20 if target.name == 'demo' else (180000 if target.name == 'dev' else 6000000) }}"
 
     columns:
       - name: taxi_trip_id
