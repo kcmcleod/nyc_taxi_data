@@ -466,10 +466,7 @@ models:
       - name: airport_fee
         description: '{{ doc("airport_fee") }}'
         data_tests:
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0 
-                max_value: 1.75
+          - dbt_expectations.expect_column_values_to_be_null
 
       - name: total_amount
         description: '{{ doc("total_amount") }}'
