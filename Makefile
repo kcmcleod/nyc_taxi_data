@@ -35,7 +35,7 @@ demo: ## Quick build & launch using committed sample fixtures (zero download)
 ##@ Testing & Quality
 
 debug: ## run dbt debug
-	uv run --env-file .env dbt debug --project-dir taxi_transforms --profiles-dir taxi_transforms
+	uv run  dbt debug --project-dir taxi_transforms --profiles-dir taxi_transforms
 
 test: ## run python tests
 	uv run pytest src/ dashboard/
@@ -44,23 +44,23 @@ coverage: ## run python coverage
 	uv run pytest src/ dashboard/ --cov=nyc_taxi_data --cov=dashboard --cov-report=term-missing
 
 db_run: ## build dbt models
-	uv run --env-file .env dbt run --project-dir taxi_transforms --profiles-dir taxi_transforms
+	uv run  dbt run --project-dir taxi_transforms --profiles-dir taxi_transforms
 
 db_test: ## run dbt tests
-	uv run --env-file .env dbt test --project-dir taxi_transforms --profiles-dir taxi_transforms
+	uv run  dbt test --project-dir taxi_transforms --profiles-dir taxi_transforms
 
 db_seed: ## create dbt seeds
-	uv run --env-file .env dbt seed --project-dir taxi_transforms --profiles-dir taxi_transforms
+	uv run  dbt seed --project-dir taxi_transforms --profiles-dir taxi_transforms
 
 db_build: ## Run seeds, models, and tests in DAG order
 	uv run dbt build --project-dir taxi_transforms --profiles-dir taxi_transforms
 
 db_docs: ## build then run dbt docs
-	uv run --env-file .env dbt docs generate --project-dir taxi_transforms --profiles-dir taxi_transforms
-	uv run --env-file .env dbt docs serve --project-dir taxi_transforms --profiles-dir taxi_transforms
+	uv run  dbt docs generate --project-dir taxi_transforms --profiles-dir taxi_transforms
+	uv run  dbt docs serve --project-dir taxi_transforms --profiles-dir taxi_transforms
 
 db_deps: ## install dbt dependencies
-	uv run --env-file .env dbt deps --project-dir taxi_transforms --profiles-dir taxi_transforms
+	uv run  dbt deps --project-dir taxi_transforms --profiles-dir taxi_transforms
 
 db_view: ## connect to db in terminal
 	harlequin --read-only data/taxi_data.duckdb
