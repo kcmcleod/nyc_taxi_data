@@ -8,7 +8,7 @@ st.title("NYC Taxi Data dashboard")
 with st.container(border=True):
     st.subheader("About this Dashboard")
     st.write(
-        "This application provides high-speed, interactive analytics for New York City's Yellow Taxi network. Powered by an Apache Arrow and Parquet backend, it rapidly queries partitioned data to visualise journey volumes, financial metrics, and geographic trip patterns without the overhead of a traditional database."
+        "This application provides high-speed, interactive analytics for New York City's Yellow & Green Taxi network. It is a streamlit dashboard sitting on top of a database (duckdb in dev mode) querying tables tranformed (using a medallion architeture) from the raw parquet source files with dbt."
     )
     st.markdown(
         "[Data from the NYC Taxi and Limousine Commission (TLC)](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page 'Data from the NYC Taxi and Limousine Commission (TLC).')"
