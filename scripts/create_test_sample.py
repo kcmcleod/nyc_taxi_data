@@ -34,9 +34,9 @@ if __name__ == "__main__":  # pragma: no cover
         file_one = all_files[0]
         print(f"Reading {file_one}...")
 
-        df = db.sql(f"SELECT * FROM read_parquet('{file_one}') LIMIT 25").df()
-
-        sample_df = df.head(n=25)
+        sample_df = db.sql(
+            f"SELECT * FROM read_parquet('{file_one}') USING SAMPLE 2500 "
+        ).df()
 
         output_file = output_dir / f"{colour}_sample.parquet"
 
